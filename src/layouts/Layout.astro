@@ -1,0 +1,105 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+	structuredData?: object;
+}
+
+const {
+	title = "WifiHeatmap — Wi-Fi Analyzer & Indoor Survey Tool",
+	description = "WifiHeatmap is a privacy-first, 100% offline Android app to create indoor Wi-Fi heatmaps, graph 2.4/5/6 GHz channels, rate frequencies, and optimize coverage.",
+	structuredData,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(
+	`${import.meta.env.BASE_URL}/og-image.png`,
+	Astro.site,
+);
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={description} />
+		<meta name="author" content="heymeowcat" />
+		<meta
+			name="robots"
+			content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+		/>
+		<link rel="canonical" href={canonicalURL} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<!-- Favicon -->
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href={`${import.meta.env.BASE_URL}/favicon.svg`}
+		/>
+		<meta name="generator" content={Astro.generator} />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImageURL} />
+		<meta property="og:site_name" content="WifiHeatmap" />
+		<meta property="og:locale" content="en_US" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:url" content={canonicalURL} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageURL} />
+
+		<!-- Keywords -->
+		<meta
+			name="keywords"
+			content="wifiheatmap, wifi analyzer android, indoor wifi site survey, pedestrian dead reckoning wifi, wifi 6e analyzer, wifi 7 320mhz, channel rating, signal strength dbm, offline wifi analyzer, android site survey"
+		/>
+
+		<title>{title}</title>
+
+		<!-- Structured Data -->
+		{
+			structuredData && (
+				<script
+					type="application/ld+json"
+					set:html={JSON.stringify(structuredData)}
+				/>
+			)
+		}
+
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body
+		class="bg-[#050814] text-slate-100 antialiased font-sans selection:bg-cyan-500/30 selection:text-cyan-200"
+	>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--font-outfit: "Outfit", sans-serif;
+		--font-mono: "JetBrains Mono", monospace;
+	}
+	html {
+		font-family: var(--font-outfit);
+	}
+	code, pre, .font-mono {
+		font-family: var(--font-mono);
+	}
+</style>

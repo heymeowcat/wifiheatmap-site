@@ -1,0 +1,111 @@
+---
+---
+
+<header class="w-full border-b border-cyan-500/10 bg-[#050814]/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="container mx-auto px-6 h-18 flex items-center justify-between">
+        <a href={`${import.meta.env.BASE_URL}/`} class="flex items-center gap-3.5 group">
+            <img
+                src={`${import.meta.env.BASE_URL}/icon.png`}
+                alt="WifiHeatmap Icon"
+                class="w-10 h-10 rounded-xl object-contain shadow-sm group-hover:scale-105 transition-transform"
+            />
+            <div class="flex flex-col">
+                <span class="text-xl font-extrabold text-white tracking-tight leading-tight">
+                    WifiHeatmap
+                </span>
+                <span class="text-[11px] text-slate-400 font-medium">Wi-Fi Analyzer & Site Survey</span>
+            </div>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-8">
+            <a href={`${import.meta.env.BASE_URL}/#features`} class="text-sm font-medium text-slate-300 hover:text-cyan-300 transition-colors">Features</a>
+            <a href={`${import.meta.env.BASE_URL}/#showcase`} class="text-sm font-medium text-slate-300 hover:text-cyan-300 transition-colors">Interactive Demo</a>
+            <a href={`${import.meta.env.BASE_URL}/privacy-policy`} class="text-sm font-medium text-slate-300 hover:text-cyan-300 transition-colors">Privacy</a>
+            <a href={`${import.meta.env.BASE_URL}/terms-of-service`} class="text-sm font-medium text-slate-300 hover:text-cyan-300 transition-colors">Terms</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+            <a
+                href="https://play.google.com/store/apps/details?id=com.heymeowcat.wifiheatmap"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 rounded-xl text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-sm transition-all flex items-center gap-1.5"
+            >
+                <span>Install on Google Play</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</header>
+
+<section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-12 pb-20">
+    <!-- Ambient RF Spectrum Glow -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(6,182,212,0.12),rgba(16,185,129,0.05)_35%,rgba(5,8,20,1)_75%)]"></div>
+    <div
+        class="absolute inset-0 opacity-[0.04] bg-center [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"
+        style={`background-image: url('${import.meta.env.BASE_URL}/grid.svg')`}
+    ></div>
+
+    <div class="container mx-auto px-6 relative z-10 text-center max-w-5xl">
+        <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight mb-8 text-white leading-[1.02]">
+            Survey.<br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">
+                Analyze. Heatmap.
+            </span>
+        </h1>
+
+        <p class="text-lg sm:text-2xl text-slate-300 max-w-3xl mx-auto mb-12 leading-relaxed font-normal">
+            Turn your Android phone into an enterprise-grade Wi-Fi survey system.
+            Map real-time indoor signal heatmaps with biomechanical step tracking,
+            graph <strong class="text-cyan-300 font-semibold">2.4, 5, and 6 GHz</strong> channels, and rate wireless frequencies with zero cloud telemetry.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+            <a
+                href="https://play.google.com/store/apps/details?id=com.heymeowcat.wifiheatmap"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-block transition-transform hover:scale-[1.03]"
+            >
+                <img
+                    src={`${import.meta.env.BASE_URL}/google-play-badge-logo-svgrepo-com.svg`}
+                    alt="Get it on Google Play"
+                    class="h-14 w-auto drop-shadow-md"
+                />
+            </a>
+
+            <a
+                href={`${import.meta.env.BASE_URL}/#showcase`}
+                class="h-14 px-6 bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700 hover:border-slate-600 text-slate-200 hover:text-white rounded-xl font-semibold text-base transition-all flex items-center gap-2"
+            >
+                <span>Explore Interactive Demo</span>
+                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6 border-t border-slate-800/80">
+            <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                <div class="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-mono">2.4 • 5 • 6 GHz</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Tri-Band Coverage</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">320 MHz</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Wi-Fi 7 Channels</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                <div class="text-2xl sm:text-3xl font-extrabold text-teal-400 font-mono">PDR + IDW</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Step Kinematics</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                <div class="text-2xl sm:text-3xl font-extrabold text-blue-400 font-mono">0% Cloud</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">100% Offline & Private</div>
+            </div>
+        </div>
+    </div>
+</section>

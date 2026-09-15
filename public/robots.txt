@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://heymeowcat.is-a.dev/wifiheatmap-site/sitemap-index.xml
