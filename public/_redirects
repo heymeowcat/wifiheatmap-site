@@ -1,0 +1,16 @@
+# Netlify / Cloudflare Pages redirects.
+# GitHub Pages ignores this file — the equivalent behaviour there comes from
+# the static redirect stubs Astro generates in dist/ plus the "Enforce HTTPS"
+# setting in Settings → Pages.
+
+# Force HTTPS (301, permanent + cacheable by browsers).
+http://heymeowcat.is-a.dev/*   https://heymeowcat.is-a.dev/:splat  301
+http://*.is-a.dev/*            https://*.is-a.dev/:splat         301
+
+# Legacy slugs → clean slugs.
+/privacy-policy        /privacy/                  301
+/privacy-policy/       /privacy/                  301
+/terms-of-service      /terms/                    301
+/terms-of-service/     /terms/                    301
+/features              /features/floorplan-heatmap/  301
+/features/             /features/floorplan-heatmap/  301

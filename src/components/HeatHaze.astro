@@ -1,0 +1,82 @@
+---
+/**
+ * Animated rainbow heat field.
+ *
+ * Reproduces the interpolated coverage field the Android app renders over a
+ * floorplan: soft overlapping colour fields in the app's heat ramp
+ * (blue → cyan → green → yellow → orange → red) drifting slowly.
+ *
+ * Built from layered radial gradients — no SVG filters, no backdrop-filter —
+ * so it composites on the GPU and costs nothing in layout or paint time.
+ * On the light canvas the warm colours are blended with `multiply` so they
+ * read as pigment rather than light.
+ */
+interface Props {
+	class?: string;
+	/** 0 → 1. Scales the overall opacity of the field. */
+	intensity?: number;
+	/** Renders the faint engineering grid on top of the haze. */
+	grid?: boolean;
+	/** Renders the film-grain overlay. */
+	texture?: boolean;
+}
+
+const {
+	class: className = "",
+	intensity = 0.75,
+	grid = false,
+	texture = true,
+} = Astro.props;
+---
+
+<div
+	class:list={["pointer-events-none absolute inset-0 overflow-hidden", className]}
+	aria-hidden="true"
+>
+	<!-- Base wash: the cool end of the spectrum -->
+	<div
+		class="absolute inset-0"
+		style={`opacity:${intensity * 0.5};background:
+			radial-gradient(110% 80% at 10% 15%, rgba(37,99,235,0.30) 0%, transparent 55%),
+			radial-gradient(95% 70% at 90% 10%, rgba(14,165,233,0.28) 0%, transparent 52%),
+			radial-gradient(90% 75% at 80% 90%, rgba(99,102,241,0.26) 0%, transparent 55%);`}
+	></div>
+
+	<!-- Warm core: the hot end of the spectrum -->
+	<div
+		class="animate-haze-a absolute -inset-[25%] mix-blend-multiply"
+		style={`opacity:${intensity * 0.55};background:
+			radial-gradient(38% 34% at 36% 56%, rgba(249,115,22,0.45) 0%, transparent 70%),
+			radial-gradient(30% 28% at 55% 42%, rgba(250,204,21,0.45) 0%, transparent 72%),
+			radial-gradient(46% 40% at 70% 66%, rgba(239,68,68,0.38) 0%, transparent 72%),
+			radial-gradient(52% 46% at 22% 76%, rgba(74,222,128,0.35) 0%, transparent 74%);`}
+	></div>
+
+	<!-- Cool interference field -->
+	<div
+		class="animate-haze-b absolute -inset-[25%] mix-blend-multiply"
+		style={`opacity:${intensity * 0.4};background:
+			radial-gradient(34% 32% at 62% 24%, rgba(34,211,238,0.35) 0%, transparent 72%),
+			radial-gradient(40% 36% at 86% 48%, rgba(59,130,246,0.28) 0%, transparent 72%);`}
+	></div>
+
+	<!-- Soft highlight -->
+	<div
+		class="animate-haze-c absolute -inset-[30%] mix-blend-screen"
+		style={`opacity:${intensity * 0.5};background:
+			radial-gradient(26% 24% at 44% 32%, rgba(255,255,255,0.85) 0%, transparent 70%),
+			radial-gradient(22% 20% at 72% 78%, rgba(224,231,255,0.7) 0%, transparent 70%);`}
+	></div>
+
+	{
+		grid && (
+			<div class="grid-lines absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_40%,#000_20%,transparent_100%)]" />
+		)
+	}
+
+	{
+		texture && (
+			<div class="grain absolute inset-0 opacity-[0.09] mix-blend-multiply" />
+		)
+	}
+</div>

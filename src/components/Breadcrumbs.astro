@@ -1,0 +1,57 @@
+---
+import { withBase } from "../config";
+
+interface Crumb {
+	label: string;
+	href?: string;
+}
+
+interface Props {
+	items: Crumb[];
+	class?: string;
+}
+
+const { items, class: className = "" } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class={className}>
+	<ol class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+		<li>
+			<a href={withBase("/")} class="transition-colors hover:text-sky-700"
+				>Home</a
+			>
+		</li>
+		{
+			items.map((item, index) => (
+				<li class="flex items-center gap-1.5">
+					<svg
+						class="h-3 w-3 text-slate-500"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2.5"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="m9 5 7 7-7 7"
+						/>
+					</svg>
+					{item.href && index < items.length - 1 ? (
+						<a
+							href={withBase(item.href)}
+							class="transition-colors hover:text-sky-700"
+						>
+							{item.label}
+						</a>
+					) : (
+						<span class="text-slate-700" aria-current="page">
+							{item.label}
+						</span>
+					)}
+				</li>
+			))
+		}
+	</ol>
+</nav>

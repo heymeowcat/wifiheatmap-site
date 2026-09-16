@@ -1,0 +1,76 @@
+---
+import { SITE, PLAY_STORE_URL } from "../config";
+import HeatHaze from "./HeatHaze.astro";
+import PlayIcon from "./PlayIcon.astro";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Map your coverage. Ship a better network.",
+	description = "Survey, analyse and optimise your indoor wireless environment with professional precision — offline, with zero cloud telemetry.",
+} = Astro.props;
+---
+
+<section
+	class="section-y relative overflow-hidden border-t border-white/70 bg-white/70"
+	aria-labelledby="cta-heading"
+>
+	<HeatHaze class="-z-10" intensity={0.9} />
+
+	<div class="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+		<h2
+			id="cta-heading"
+			class="text-balance text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl"
+		>
+			{title}
+		</h2>
+		<p class="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-slate-600 sm:text-lg">
+			{description}
+		</p>
+
+		<div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
+			<a
+				href={PLAY_STORE_URL}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center justify-center gap-3 rounded-2xl bg-[linear-gradient(120deg,#22d3ee,#38bdf8_40%,#818cf8)] px-6 py-3.5 shadow-[0_18px_38px_-16px_rgba(14,165,233,0.95)] transition-transform duration-200 hover:scale-[1.03]"
+			>
+				<PlayIcon class="h-6 w-5 shrink-0" />
+				<span class="flex flex-col items-start leading-tight">
+					<span class="text-[10px] font-medium uppercase tracking-wider text-slate-900/70"
+						>Get it on</span
+					>
+					<span class="text-base font-bold text-slate-900">Google Play</span>
+				</span>
+			</a>
+
+			<a
+				href={`${SITE.base}/features/floorplan-heatmap/`}
+				class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/80 bg-white/70 px-6 py-3.5 text-base font-semibold text-slate-700 shadow-[0_0_0_1px_rgba(148,163,184,0.22)] backdrop-blur-md transition-all hover:-translate-y-0.5 hover:text-slate-900"
+			>
+				<span>Browse every feature</span>
+				<svg
+					class="h-4 w-4 text-sky-600"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M5 12h14m-6-7 7 7-7 7"
+					></path>
+				</svg>
+			</a>
+		</div>
+
+		<p class="mt-6 text-xs text-slate-500">
+			Free · Android 7.0+ · No account required · No telemetry
+		</p>
+	</div>
+</section>

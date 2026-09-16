@@ -1,0 +1,55 @@
+# Apache / Netlify .htaccess
+# GitHub Pages does not read this file — enable "Enforce HTTPS" in
+# Settings → Pages instead.
+
+# ---------------------------------------------------------------------
+# Force HTTPS
+# ---------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Legacy slugs → clean slugs (301)
+# ---------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteRule ^privacy-policy/?$ /wifiheatmap-site/privacy/ [L,R=301]
+  RewriteRule ^terms-of-service/?$ /wifiheatmap-site/terms/ [L,R=301]
+  RewriteRule ^features/?$ /wifiheatmap-site/features/floorplan-heatmap/ [L,R=301]
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Security headers
+# ---------------------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  Header always set Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Compression
+# ---------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml application/xml
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Caching
+# ---------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
