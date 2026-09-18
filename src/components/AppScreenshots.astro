@@ -1,0 +1,100 @@
+---
+import { Image } from "astro:assets";
+import heatmapLight from "../assets/screenshots/01-heatmap-light.jpg";
+import heatmapDark from "../assets/screenshots/07-heatmap-dark-full.jpg";
+import networks from "../assets/screenshots/03-networks-light.jpg";
+import spectrum from "../assets/screenshots/04-spectrum-channels.jpg";
+import rating from "../assets/screenshots/05-spectrum-rating.jpg";
+import tools from "../assets/screenshots/06-tools-light.jpg";
+
+interface Props {
+	/** "dark" shows the dark-theme shots, "light" the light-theme ones, "all" both. */
+	tone?: "dark" | "light" | "all";
+	class?: string;
+}
+
+const { tone = "all", class: className = "" } = Astro.props;
+
+const shots = [
+	{
+		src: heatmapLight,
+		alt: "WifiHeatmap live floorplan survey in the light theme: a rainbow RF coverage heat haze in orange, yellow, green and blue over a floor plan, with a walked path and green sample markers labelled -31 dBm to -60 dBm",
+		label: "Floorplan heatmap survey",
+		tone: "light",
+	},
+	{
+		src: heatmapDark,
+		alt: "WifiHeatmap floorplan survey in the dark theme showing the same interpolated RF coverage field, the PDR walk trace and a scanning status bar",
+		label: "Coverage field (dark)",
+		tone: "dark",
+	},
+	{
+		src: networks,
+		alt: "WifiHeatmap access point list showing the connected network curio at -32 dBm on channel 149 (5745 MHz) with vendor, frequency and channel width details",
+		label: "Access point inspector",
+		tone: "light",
+	},
+	{
+		src: spectrum,
+		alt: "WifiHeatmap spectrum channel graph plotting overlapping 2.4 GHz access point curves across channels 1 to 13 with a zoom control",
+		label: "Spectrum channels",
+		tone: "light",
+	},
+	{
+		src: rating,
+		alt: "WifiHeatmap channel rating screen recommending channels 9, 13 and 1 with one to five star ratings and access point counts per channel",
+		label: "Channel rating",
+		tone: "light",
+	},
+	{
+		src: tools,
+		alt: "WifiHeatmap network tools screen with router admin setup for gateway 192.168.1.1 plus speed test, ping, roaming, traceroute and DNS entries",
+		label: "Network toolkit",
+		tone: "light",
+	},
+].filter((shot) => tone === "all" || shot.tone === tone);
+
+const halos = [
+	"conic-gradient(from 200deg at 50% 50%,#22d3ee,#4ade80,#fde047,#fb923c,#ef4444,#22d3ee)",
+	"conic-gradient(from 160deg at 50% 50%,#22d3ee,#0ea5e9,#6366f1,#22d3ee)",
+	"conic-gradient(from 120deg at 50% 50%,#4ade80,#fde047,#fb923c,#ef4444,#4ade80)",
+	"conic-gradient(from 60deg at 50% 50%,#fde047,#fb923c,#ef4444,#fde047)",
+	"conic-gradient(from 280deg at 50% 50%,#818cf8,#a78bfa,#22d3ee,#818cf8)",
+	"conic-gradient(from 340deg at 50% 50%,#fb923c,#ef4444,#ec4899,#fde047,#fb923c)",
+];
+---
+
+<div
+	class:list={[
+		"grid grid-cols-2 gap-5 sm:grid-cols-3 sm:gap-7 lg:gap-9",
+		className,
+	]}
+>
+	{
+		shots.map((shot, index) => (
+			<figure class="group relative">
+				<div
+					class="absolute -inset-3 -z-10 rounded-[2rem] opacity-70 blur-xl transition-opacity duration-300 group-hover:opacity-100"
+					style={`background:${halos[index % halos.length]}`}
+					aria-hidden="true"
+				/>
+				<div class="relative overflow-hidden rounded-[1.6rem] border-[5px] border-white bg-white shadow-[0_22px_50px_-24px_rgba(37,99,235,0.55)] transition-transform duration-300 group-hover:-translate-y-1.5">
+					<Image
+						src={shot.src}
+						alt={shot.alt}
+						widths={[240, 360, 540]}
+						sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 280px"
+						format="webp"
+						quality={72}
+						loading="lazy"
+						decoding="async"
+						class="block h-full w-full"
+					/>
+				</div>
+				<figcaption class="mt-4 text-center text-xs font-semibold text-slate-600">
+					{shot.label}
+				</figcaption>
+			</figure>
+		))
+	}
+</div>

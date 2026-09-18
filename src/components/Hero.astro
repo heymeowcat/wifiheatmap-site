@@ -1,111 +1,198 @@
 ---
+import { Image } from "astro:assets";
+import { SITE, PLAY_STORE_URL } from "../config";
+import HeatHaze from "./HeatHaze.astro";
+import PlayIcon from "./PlayIcon.astro";
+import heroShot from "../assets/screenshots/01-heatmap-light.jpg";
+
+const metrics = [
+	{ value: "2.4 · 5 · 6 GHz", label: "Tri-band coverage", tone: "text-sky-600" },
+	{ value: "320 MHz", label: "Wi-Fi 7 channels", tone: "text-emerald-600" },
+	{ value: "PDR + IDW", label: "Step kinematics", tone: "text-indigo-600" },
+	{ value: "0% cloud", label: "Offline & private", tone: "text-rose-600" },
+];
 ---
 
-<header class="w-full border-b border-cyan-500/10 bg-[#050814]/80 backdrop-blur-md sticky top-0 z-50">
-    <div class="container mx-auto px-6 h-18 flex items-center justify-between">
-        <a href={`${import.meta.env.BASE_URL}/`} class="flex items-center gap-3.5 group">
-            <img
-                src={`${import.meta.env.BASE_URL}/icon.png`}
-                alt="WifiHeatmap Icon"
-                class="w-10 h-10 rounded-xl object-contain shadow-sm group-hover:scale-105 transition-transform"
-            />
-            <div class="flex flex-col">
-                <span class="text-xl font-extrabold text-white tracking-tight leading-tight">
-                    WifiHeatmap
-                </span>
-                <span class="text-[11px] text-slate-400 font-medium">Wi-Fi Analyzer & Site Survey</span>
-            </div>
-        </a>
+<section
+	class="relative isolate overflow-hidden pb-20 pt-14 sm:pb-24 sm:pt-20 lg:pb-28 lg:pt-24"
+>
+	<!-- Rainbow field -->
+	<HeatHaze class="-z-10" intensity={0.85} grid />
 
-        <nav class="hidden md:flex items-center gap-8">
-            <a href={`${import.meta.env.BASE_URL}/#features`} class="text-sm font-medium text-slate-300 hover:text-cyan-300 transition-colors">Features</a>
-            <a href={`${import.meta.env.BASE_URL}/#showcase`} class="text-sm font-medium text-slate-300 hover:text-cyan-300 transition-colors">Interactive Demo</a>
-            <a href={`${import.meta.env.BASE_URL}/privacy-policy`} class="text-sm font-medium text-slate-300 hover:text-cyan-300 transition-colors">Privacy</a>
-            <a href={`${import.meta.env.BASE_URL}/terms-of-service`} class="text-sm font-medium text-slate-300 hover:text-cyan-300 transition-colors">Terms</a>
-        </nav>
+	<div
+		class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-[linear-gradient(90deg,transparent,rgba(14,165,233,0.5),rgba(74,222,128,0.5),rgba(253,224,71,0.5),rgba(251,146,60,0.5),rgba(239,68,68,0.5),transparent)]"
+		aria-hidden="true"
+	>
+	</div>
 
-        <div class="flex items-center gap-3">
-            <a
-                href="https://play.google.com/store/apps/details?id=com.heymeowcat.wifiheatmap"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="px-4 py-2 rounded-xl text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-sm transition-all flex items-center gap-1.5"
-            >
-                <span>Install on Google Play</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                </svg>
-            </a>
-        </div>
-    </div>
-</header>
+	<div
+		class="mx-auto grid max-w-7xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8"
+	>
+		<!-- Copy -->
+		<div class="lg:col-span-7">
+			<p
+				class="chip mb-6 text-sky-700 shadow-[0_0_0_1px_rgba(14,165,233,0.3),0_10px_30px_-14px_rgba(14,165,233,0.9)]"
+			>
+				<span class="relative flex h-2 w-2">
+					<span
+						class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+					></span>
+					<span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"
+					></span>
+				</span>
+				<span class="uppercase tracking-[0.14em]">100% offline · zero telemetry</span>
+			</p>
 
-<section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-12 pb-20">
-    <!-- Ambient RF Spectrum Glow -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(6,182,212,0.12),rgba(16,185,129,0.05)_35%,rgba(5,8,20,1)_75%)]"></div>
-    <div
-        class="absolute inset-0 opacity-[0.04] bg-center [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)]"
-        style={`background-image: url('${import.meta.env.BASE_URL}/grid.svg')`}
-    ></div>
+			<h1
+				class="text-balance text-[2.2rem] font-black leading-[1.06] tracking-tight text-slate-900 sm:text-5xl lg:text-[3.6rem]"
+			>
+				Turn your Android phone into a
+				<span class="text-rainbow">Wi-Fi analyzer &amp; indoor site survey</span>
+				tool.
+			</h1>
 
-    <div class="container mx-auto px-6 relative z-10 text-center max-w-5xl">
-        <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight mb-8 text-white leading-[1.02]">
-            Survey.<br />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">
-                Analyze. Heatmap.
-            </span>
-        </h1>
+			<p
+				class="mt-6 max-w-xl text-pretty text-base leading-relaxed text-slate-600 sm:text-lg"
+			>
+				Paint real RF coverage heatmaps on any floor plan with biomechanical step
+				tracking, chart <strong class="font-semibold text-sky-700"
+					>2.4, 5 and 6 GHz</strong
+				> spectrums in real time, and get a star-rated recommendation for the
+				least congested channel. No account, no cloud, no data collection.
+			</p>
 
-        <p class="text-lg sm:text-2xl text-slate-300 max-w-3xl mx-auto mb-12 leading-relaxed font-normal">
-            Turn your Android phone into an enterprise-grade Wi-Fi survey system.
-            Map real-time indoor signal heatmaps with biomechanical step tracking,
-            graph <strong class="text-cyan-300 font-semibold">2.4, 5, and 6 GHz</strong> channels, and rate wireless frequencies with zero cloud telemetry.
-        </p>
+			<div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+				<a
+					href={PLAY_STORE_URL}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="group inline-flex items-center justify-center gap-3 rounded-2xl bg-[linear-gradient(120deg,#22d3ee,#38bdf8_40%,#818cf8)] px-6 py-3.5 shadow-[0_18px_38px_-16px_rgba(14,165,233,0.9)] transition-transform duration-200 hover:scale-[1.03]"
+				>
+					<PlayIcon class="h-6 w-5 shrink-0" />
+					<span class="flex flex-col items-start leading-tight">
+						<span class="text-[10px] font-medium uppercase tracking-wider text-slate-900/70"
+							>Get it on</span
+						>
+						<span class="text-base font-bold text-slate-900">Google Play</span>
+					</span>
+				</a>
 
-        <!-- CTA Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <a
-                href="https://play.google.com/store/apps/details?id=com.heymeowcat.wifiheatmap"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-block transition-transform hover:scale-[1.03]"
-            >
-                <img
-                    src={`${import.meta.env.BASE_URL}/google-play-badge-logo-svgrepo-com.svg`}
-                    alt="Get it on Google Play"
-                    class="h-14 w-auto drop-shadow-md"
-                />
-            </a>
+				<a
+					href="#showcase"
+					class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/80 bg-white/70 px-6 py-3.5 text-base font-semibold text-slate-700 shadow-[0_0_0_1px_rgba(148,163,184,0.22),0_14px_34px_-22px_rgba(37,99,235,0.6)] backdrop-blur-md transition-all hover:-translate-y-0.5 hover:text-slate-900"
+				>
+					<span>See the live demo</span>
+					<svg
+						class="h-4 w-4 text-sky-600"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M19 9l-7 7-7-7"
+						></path>
+					</svg>
+				</a>
+			</div>
 
-            <a
-                href={`${import.meta.env.BASE_URL}/#showcase`}
-                class="h-14 px-6 bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700 hover:border-slate-600 text-slate-200 hover:text-white rounded-xl font-semibold text-base transition-all flex items-center gap-2"
-            >
-                <span>Explore Interactive Demo</span>
-                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </a>
-        </div>
+			<!-- Metric strip -->
+			<dl
+				class="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4"
+			>
+				{
+					metrics.map((metric) => (
+						<div class="glass-rainbow rounded-2xl px-4 py-4">
+							<dt class:list={["font-mono text-lg font-extrabold sm:text-xl", metric.tone]}>
+								{metric.value}
+							</dt>
+							<dd class="mt-1 text-[11px] uppercase tracking-wide text-slate-500">
+								{metric.label}
+							</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
 
-        <!-- Metric Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6 border-t border-slate-800/80">
-            <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                <div class="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-mono">2.4 • 5 • 6 GHz</div>
-                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Tri-Band Coverage</div>
-            </div>
-            <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">320 MHz</div>
-                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Wi-Fi 7 Channels</div>
-            </div>
-            <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                <div class="text-2xl sm:text-3xl font-extrabold text-teal-400 font-mono">PDR + IDW</div>
-                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Step Kinematics</div>
-            </div>
-            <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
-                <div class="text-2xl sm:text-3xl font-extrabold text-blue-400 font-mono">0% Cloud</div>
-                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">100% Offline & Private</div>
-            </div>
-        </div>
-    </div>
+		<!-- Real app screenshot -->
+		<div class="flex justify-center lg:col-span-5">
+			<div class="relative w-full max-w-[300px] sm:max-w-[330px]">
+				<!-- Rainbow halo -->
+				<div
+					class="absolute -inset-6 -z-10 rounded-[3rem] opacity-90 blur-2xl"
+					style="background:conic-gradient(from 210deg at 50% 50%,#22d3ee,#4ade80,#fde047,#fb923c,#ef4444,#a78bfa,#22d3ee)"
+					aria-hidden="true"
+				>
+				</div>
+
+				<div
+					class="animate-float-slow relative overflow-hidden rounded-[2.2rem] border-[6px] border-white bg-white shadow-[0_40px_80px_-30px_rgba(37,99,235,0.55)]"
+				>
+					<Image
+						src={heroShot}
+						alt="WifiHeatmap live floorplan survey on Android: a rainbow RF coverage heat haze in orange, yellow, green and blue spread across a floor plan, with the walked survey path and green sample markers labelled from -31 dBm to -60 dBm"
+						width={heroShot.width}
+						height={heroShot.height}
+						loading="eager"
+						decoding="async"
+						fetchpriority="high"
+						class="block h-full w-full"
+					/>
+
+					<!-- Live badge -->
+					<div
+						class="absolute left-1/2 top-3 -translate-x-1/2 rounded-full border border-white/80 bg-white/75 px-3 py-1 font-mono text-[10px] font-bold text-emerald-700 shadow-[0_0_0_1px_rgba(148,163,184,0.2)] backdrop-blur-md"
+					>
+						<span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 align-middle"
+						></span>
+						Live survey
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Marquee of capabilities -->
+	<div
+		class="relative mt-16 overflow-hidden border-y border-white/70 bg-white/70 py-4 backdrop-blur-sm sm:mt-20"
+	>
+		<div class="animate-marquee flex w-max items-center gap-10 whitespace-nowrap">
+			{
+				[
+					"Inverse Distance Weighting",
+					"Weinberg step detection",
+					"2.4 / 5 / 6 GHz",
+					"320 MHz (Wi-Fi 7)",
+					"Free-Space Path Loss",
+					"OUI vendor lookup",
+					"BSSID roaming log",
+					"Traceroute & DNS",
+					"Barometric floor detection",
+					"CSV + heat report export",
+				].map((item, index) => (
+					<span class="flex items-center gap-10 font-mono text-xs uppercase tracking-[0.2em] text-slate-500">
+						{item}
+						<span
+							class:list={[
+								"h-1.5 w-1.5 rounded-full",
+								[
+									"bg-heat-1",
+									"bg-heat-2",
+									"bg-heat-3",
+									"bg-heat-4",
+									"bg-heat-5",
+									"bg-heat-6",
+								][index % 6],
+							]}
+							aria-hidden="true"
+						/>
+					</span>
+				))
+			}
+		</div>
+	</div>
 </section>

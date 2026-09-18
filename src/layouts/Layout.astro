@@ -1,105 +1,157 @@
 ---
 import "../styles/global.css";
+import { SITE, absoluteUrl } from "../config";
 
 interface Props {
-	title?: string;
-	description?: string;
-	structuredData?: object;
+	title: string;
+	description: string;
+	/** Path only, e.g. "/features/floorplan-heatmap/". */
+	path?: string;
+	/** One or more JSON-LD graph objects. */
+	structuredData?: object | object[];
+	ogImage?: string;
+	ogImageAlt?: string;
+	/** "website" for the home page, "article" for guides. */
+	ogType?: "website" | "article";
+	noindex?: boolean;
 }
 
 const {
-	title = "WifiHeatmap — Wi-Fi Analyzer & Indoor Survey Tool",
-	description = "WifiHeatmap is a privacy-first, 100% offline Android app to create indoor Wi-Fi heatmaps, graph 2.4/5/6 GHz channels, rate frequencies, and optimize coverage.",
+	title,
+	description,
+	path = Astro.url.pathname,
 	structuredData,
+	ogImage = "/og-image.png",
+	ogImageAlt = `${SITE.appName} — Wi-Fi analyzer and indoor site survey app for Android`,
+	ogType = "website",
+	noindex = false,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = new URL(
-	`${import.meta.env.BASE_URL}/og-image.png`,
-	Astro.site,
-);
+const canonical = absoluteUrl(path);
+const ogImageURL = absoluteUrl(ogImage);
+const base = SITE.base;
+
+/**
+ * Google Search Console verification token. Set the
+ * `PUBLIC_GOOGLE_SITE_VERIFICATION` env var in the build environment
+ * (`.env` locally, repository secret in CI) — no code change needed.
+ */
+const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+
+const schema = structuredData
+	? Array.isArray(structuredData)
+		? structuredData
+		: [structuredData]
+	: [];
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang={SITE.language} class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="description" content={description} />
-		<meta name="author" content="heymeowcat" />
-		<meta
-			name="robots"
-			content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-		/>
-		<link rel="canonical" href={canonicalURL} />
-		<link rel="sitemap" href="/sitemap-index.xml" />
-
-		<!-- Favicon -->
-		<link
-			rel="icon"
-			type="image/svg+xml"
-			href={`${import.meta.env.BASE_URL}/favicon.svg`}
-		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 
-		<!-- Open Graph / Facebook -->
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content={canonicalURL} />
+		<!-- ============ Core SEO ============ -->
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="author" content={SITE.author} />
+		<link rel="canonical" href={canonical} />
+		<meta
+			name="robots"
+			content={
+				noindex
+					? "noindex, follow"
+					: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, max-frame:-1"
+			}
+		/>
+		<link rel="sitemap" href={`${base}/sitemap.xml`} />
+
+		<!-- ============ Open Graph ============ -->
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={canonical} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={ogImageURL} />
-		<meta property="og:site_name" content="WifiHeatmap" />
-		<meta property="og:locale" content="en_US" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={ogImageAlt} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:site_name" content={SITE.appName} />
+		<meta property="og:locale" content={SITE.locale} />
 
-		<!-- Twitter -->
+		<!-- ============ Twitter / X ============ -->
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:url" content={canonicalURL} />
+		<meta name="twitter:url" content={canonical} />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageURL} />
+		<meta name="twitter:image:alt" content={ogImageAlt} />
+		<meta name="twitter:site" content="@heymeowcat" />
 
-		<!-- Keywords -->
-		<meta
-			name="keywords"
-			content="wifiheatmap, wifi analyzer android, indoor wifi site survey, pedestrian dead reckoning wifi, wifi 6e analyzer, wifi 7 320mhz, channel rating, signal strength dbm, offline wifi analyzer, android site survey"
-		/>
+		<!-- ============ Icons & theme ============ -->
+		<link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+		<link rel="icon" type="image/png" sizes="192x192" href={`${base}/icon-192.png`} />
+		<link rel="apple-touch-icon" sizes="180x180" href={`${base}/apple-touch-icon.png`} />
+		<link rel="manifest" href={`${base}/site.webmanifest`} />
+		<meta name="theme-color" content={SITE.themeColor} />
+		<meta name="color-scheme" content="light" />
+		<meta name="application-name" content={SITE.appName} />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content={SITE.name} />
 
-		<title>{title}</title>
-
-		<!-- Structured Data -->
+		<!-- ============ Search Console ============ -->
 		{
-			structuredData && (
-				<script
-					type="application/ld+json"
-					set:html={JSON.stringify(structuredData)}
-				/>
+			googleSiteVerification && (
+				<meta name="google-site-verification" content={googleSiteVerification} />
 			)
 		}
+		<meta name="format-detection" content="telephone=no" />
 
-		<!-- Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<!-- ============ Fonts (self-hosted → no third-party CSS request) ====== -->
 		<link
-			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap"
-			rel="stylesheet"
+			rel="preload"
+			href={`${base}/fonts/outfit-var.woff2`}
+			as="font"
+			type="font/woff2"
+			crossorigin
 		/>
+		<link
+			rel="preload"
+			href={`${base}/fonts/jetbrains-mono-var.woff2`}
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+		<style
+			is:inline
+			set:html={`
+@font-face{font-family:"Outfit";font-style:normal;font-weight:100 900;font-display:swap;src:url("${base}/fonts/outfit-var.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6-02FF,U+1E00-1E9F,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:100 800;font-display:swap;src:url("${base}/fonts/jetbrains-mono-var.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6-02FF,U+1E00-1E9F,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+`}
+		/>
+
+		<!-- ============ Structured data ============ -->
+		{
+			schema.map((item) => (
+				<script
+					type="application/ld+json"
+					is:inline
+					set:html={JSON.stringify(item)}
+				/>
+			))
+		}
 	</head>
-	<body
-		class="bg-[#050814] text-slate-100 antialiased font-sans selection:bg-cyan-500/30 selection:text-cyan-200"
-	>
+
+	<body class="bg-ink-950 text-slate-700 antialiased font-sans selection:bg-cyan-300/40 selection:text-sky-900">
+		<a
+			href="#main"
+			class="sr-only-focusable focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-xl focus:bg-brand-500 focus:px-5 focus:py-3 focus:text-sm focus:font-bold focus:text-slate-950"
+		>
+			Skip to main content
+		</a>
+
 		<slot />
 	</body>
 </html>
 
-<style is:global>
-	:root {
-		--font-outfit: "Outfit", sans-serif;
-		--font-mono: "JetBrains Mono", monospace;
-	}
-	html {
-		font-family: var(--font-outfit);
-	}
-	code, pre, .font-mono {
-		font-family: var(--font-mono);
-	}
-</style>

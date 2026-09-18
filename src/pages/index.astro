@@ -1,207 +1,376 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
 import Hero from "../components/Hero.astro";
-import FeatureShowcase from "../components/FeatureShowcase";
-import Footer from "../components/Footer.astro";
+import FeatureShowcase from "../components/FeatureShowcase.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import AppScreenshots from "../components/AppScreenshots.astro";
+import FaqList from "../components/FaqList.astro";
+import CtaBand from "../components/CtaBand.astro";
+import HeatHaze from "../components/HeatHaze.astro";
+import { SITE, PLAY_STORE_URL } from "../config";
+import {
+	graph,
+	organizationSchema,
+	websiteSchema,
+	appSchema,
+	breadcrumbSchema,
+} from "../lib/schema";
 
-const structuredData = {
-	"@context": "https://schema.org",
-	"@type": "SoftwareApplication",
-	name: "WifiHeatmap",
-	operatingSystem: "Android 7.0 and up",
-	applicationCategory: "UtilitiesApplication",
-	offers: {
-		"@type": "Offer",
-		price: "0",
-		priceCurrency: "USD",
+const base = SITE.base;
+
+const title = "WifiHeatmap — Android Wi-Fi Analyzer & Indoor Site Survey";
+const description =
+	"Free offline Android Wi-Fi analyzer and site survey app. Paint floorplan signal heatmaps, chart 2.4/5/6 GHz spectrums and get star-rated channel picks.";
+
+const structuredData = graph(
+	organizationSchema(),
+	websiteSchema(),
+	appSchema(),
+	breadcrumbSchema([{ label: "Home", href: "/" }]),
+);
+
+const faqs = [
+	{
+		question: "Does WifiHeatmap need an internet connection?",
+		answer:
+			"No. Every feature — scanning, channel graphs, heatmap surveys, channel rating and report exports — runs entirely on your device. The app requests no internet permission for its core functionality and contains no telemetry, analytics or background tracking. The optional Network Tools (ping, traceroute, DNS, speed test) is the only part that touches the network, and only against hosts you explicitly choose.",
 	},
-	description:
-		"Android Wi-Fi analyzer and indoor site survey tool. Generate real-time signal heatmaps, graph 2.4/5/6 GHz spectrums, and rate channels with 100% offline privacy.",
-	author: {
-		"@type": "Person",
-		name: "heymeowcat",
+	{
+		question: "Why does Android require the Location permission to scan Wi-Fi?",
+		answer:
+			"Since Android 6.0 the operating system classifies Wi-Fi beacon frame scanning as location-sensitive data, because nearby BSSIDs could theoretically be correlated to coordinates. Android therefore returns empty scan results unless <code>ACCESS_FINE_LOCATION</code> is granted. WifiHeatmap processes beacon frames in local memory only — your location is never logged, stored or transmitted.",
 	},
-};
+	{
+		question: "What is the Physical Activity permission used for?",
+		answer:
+			"<code>ACTIVITY_RECOGNITION</code> powers the hardware step detector during floorplan heatmap surveys. It lets Pedestrian Dead Reckoning (PDR) chart your footsteps on the map as you walk, using the adaptive Weinberg formula for step length combined with compass heading. Step data is only recorded during an active survey and is discarded when the session ends.",
+	},
+	{
+		question: "How accurate are the floorplan heatmaps?",
+		answer:
+			"WifiHeatmap interpolates your sampled signal readings across the imported floor plan using Inverse Distance Weighting (IDW), which is the standard approach for radio propagation modelling between sparse measurement points. Accuracy depends on how densely you sample the space — the closer your walk steps are to the areas you care about, the more faithfully the contour reflects real coverage. Walls, furniture and multi-floor buildings all affect RF propagation.",
+	},
+	{
+		question: "Can I bypass Android's Wi-Fi scan throttling?",
+		answer:
+			"Android 9+ limits foreground Wi-Fi scans to four per two minutes, which can make results look stale. On Android 10 and newer you can lift the limit under <em>Settings &gt; Developer Options &gt; Networking &gt; Wi-Fi scan throttling</em>. With throttling off, scans run every two to four seconds, which is ideal for dense surveys. The app also warns you in-app when it detects that scans are being throttled.",
+	},
+	{
+		question: "Can WifiHeatmap crack passwords or hack networks?",
+		answer:
+			"No. WifiHeatmap is strictly a legal, professional diagnostic and surveying utility. It does not perform penetration testing, packet injection, deauthentication or credential cracking of any kind. It only observes beacon frames that your own device's Wi-Fi radio already receives.",
+	},
+	{
+		question: "Which Wi-Fi generations and channels are supported?",
+		answer:
+			"2.4 GHz, 5 GHz and 6 GHz bands are supported, including Wi-Fi 6E and Wi-Fi 7. Channel width detection covers 20, 40, 80, 160 and 320 MHz. The app also identifies the IEEE standard behind each access point (802.11n/ac/ax/be), the security type (WPA3, WPA2, WPA, WEP, WPS, OWE, EAP) and fast-roaming flags (802.11k, 802.11v, 802.11r, OKC).",
+	},
+	{
+		question: "How much does WifiHeatmap cost?",
+		answer:
+			"Nothing. WifiHeatmap is free on Google Play, requires no account and contains no advertisements or in-app purchases. The full source code is published under the GNU General Public License v3.0.",
+	},
+];
+
+const capabilities = [
+	{
+		title: "PDR motion kinematics",
+		body: "Walk through a facility naturally. The adaptive Weinberg model calculates individual step length while the compass supplies heading, so your track is drawn on the map automatically.",
+		icon: "M13 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM8 21l1.5-6 2.5 2 2-4 2 8",
+		tone: "text-sky-700 bg-sky-50 border-sky-200",
+	},
+	{
+		title: "Wi-Fi 6E & Wi-Fi 7 ready",
+		body: "Diagnose the clean 6 GHz band alongside legacy 2.4 GHz and 5 GHz, with bandwidth detection from 20 MHz all the way up to 320 MHz on 802.11be networks.",
+		icon: "M13 10V3L4 14h7v7l9-11h-7z",
+		tone: "text-emerald-700 bg-emerald-50 border-emerald-200",
+	},
+	{
+		title: "Channel rating optimiser",
+		body: "Eliminate co-channel congestion for good. Automated star-rating analysis reveals exactly which channels suffer from overlapping interference in your area.",
+		icon: "M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-3-5.3 3 1.1-6L3.4 9.4l6-.8L12 3z",
+		tone: "text-amber-700 bg-amber-50 border-amber-200",
+	},
+	{
+		title: "Vendor / OUI lookup",
+		body: "Identify access point manufacturers instantly from the MAC address OUI — Cisco, Aruba, Ubiquiti, Apple, Netgear, TP-Link and thousands more.",
+		icon: "M4 6h16M4 12h16M4 18h10",
+		tone: "text-cyan-700 bg-cyan-50 border-cyan-200",
+	},
+	{
+		title: "Signal stability time graphs",
+		body: "Catch intermittent dropouts, roaming packet loss and signal fluctuation. The time graph tracks RSSI across continuous scan iterations in real time.",
+		icon: "M3 16l4-6 4 3 4-8 4 5",
+		tone: "text-indigo-700 bg-indigo-50 border-indigo-200",
+	},
+	{
+		title: "100% offline & private",
+		body: "No telemetry, no cloud accounts, no data tracking. Every measurement, floor plan and RF calculation stays on your device.",
+		icon: "M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3z",
+		tone: "text-rose-700 bg-rose-50 border-rose-200",
+	},
+];
+
+const useCases = [
+	{
+		title: "Enterprise site surveys",
+		body: "Validate an office, campus or warehouse floor plan before you sign off the AP layout — and keep the heat map as client-facing evidence.",
+	},
+	{
+		title: "Dead-zone hunting",
+		body: "Walk the building, watch the colour field, and find exactly where coverage drops below -67 dBm before staff start complaining.",
+	},
+	{
+		title: "Home & mesh tuning",
+		body: "Compare rooms, find the position where your router performs best and pick a channel that is not fighting your neighbours.",
+	},
+	{
+		title: "Interference forensics",
+		body: "Spot a crowded 2.4 GHz band, an unstable 5 GHz link or a legacy 802.11b device dragging down your throughput.",
+	},
+];
+
+const steps = [
+	{
+		step: "01",
+		title: "Import a floor plan",
+		body: "Load any image of the space you are surveying — an office plan, a warehouse layout or a photo of the floor.",
+	},
+	{
+		step: "02",
+		title: "Walk the space",
+		body: "Walk normally with your phone. Step detection and compass heading plot your track automatically.",
+	},
+	{
+		step: "03",
+		title: "Read the field",
+		body: "Signal readings are interpolated into a live colour field so hot spots and dead zones are obvious at a glance.",
+	},
+	{
+		step: "04",
+		title: "Export & act",
+		body: "Save the heat report image or raw survey CSV, then configure your access point on the recommended channel.",
+	},
+];
 ---
 
 <Layout
-	title="WifiHeatmap — Wi-Fi Analyzer & Indoor Survey Tool"
+	title={title}
+	description={description}
+	path="/"
 	structuredData={structuredData}
 >
-	<main class="bg-[#050814]">
+	<SiteHeader />
+
+	<main id="main" class="bg-ink-950">
 		<Hero />
 
-		<!-- Interactive Feature Suite -->
-		<section id="features">
-			<FeatureShowcase client:load />
-		</section>
+		<!-- ============ Interactive feature suite ============ -->
+		<FeatureShowcase />
 
-		<!-- Architectural Deep Dive / Feature Grid -->
-		<section class="py-24 border-t border-slate-800/80 bg-[#070c1c] relative">
-			<div class="container mx-auto px-6 max-w-7xl">
-				<div class="text-center max-w-3xl mx-auto mb-16">
-					<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-4">
-						<span>Engineered For Precision</span>
-					</div>
-					<h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight mb-4">
-						Built for Wireless Professionals & Enthusiasts
-					</h2>
-					<p class="text-slate-400 text-lg leading-relaxed">
-						From enterprise campus Wi-Fi site surveys to home mesh network tuning, WifiHeatmap gives you complete technical control.
-					</p>
-				</div>
-
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-					<!-- Card 1 -->
-					<div class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-all group">
-						<div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
-							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-							</svg>
-						</div>
-						<h3 class="text-xl font-bold text-white mb-3">PDR Motion Kinematics</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							Walk through facilities naturally. Our Pedestrian Dead Reckoning algorithm leverages the adaptive Weinberg model to calculate individual step lengths and compass heading for automatic on-map tracking.
-						</p>
-					</div>
-
-					<!-- Card 2 -->
-					<div class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all group">
-						<div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
-							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-							</svg>
-						</div>
-						<h3 class="text-xl font-bold text-white mb-3">Wi-Fi 6E & Wi-Fi 7 Ready</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							Diagnose clean 6 GHz spectrums alongside legacy 2.4 GHz and 5 GHz. Fully detects modern 802.11ax and 802.11be channels with bandwidths spanning 20, 40, 80, 160, and 320 MHz.
-						</p>
-					</div>
-
-					<!-- Card 3 -->
-					<div class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-amber-500/40 transition-all group">
-						<div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform">
-							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-							</svg>
-						</div>
-						<h3 class="text-xl font-bold text-white mb-3">Channel Rating Optimizer</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							Eliminate channel congestion and co-channel degradation. Automated star-rating analysis reveals exactly which channels in your area suffer from overlapping interference.
-						</p>
-					</div>
-
-					<!-- Card 4 -->
-					<div class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-blue-500/40 transition-all group">
-						<div class="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform">
-							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-							</svg>
-						</div>
-						<h3 class="text-xl font-bold text-white mb-3">Vendor OUI Lookup</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							Identify access point manufacturers instantly from MAC address Organizationally Unique Identifiers (OUI) — detect Cisco, Aruba, Ubiquiti, Apple, Netgear, and TP-Link devices.
-						</p>
-					</div>
-
-					<!-- Card 5 -->
-					<div class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/40 transition-all group">
-						<div class="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 mb-6 group-hover:scale-110 transition-transform">
-							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-							</svg>
-						</div>
-						<h3 class="text-xl font-bold text-white mb-3">Signal Stability Time Graphs</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							Detect intermittent dropouts, roaming packet loss, and signal fluctuations. The time graph tracks RSSI values across continuous scan iterations in real-time.
-						</p>
-					</div>
-
-					<!-- Card 6 -->
-					<div class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-all group">
-						<div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
-							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-							</svg>
-						</div>
-						<h3 class="text-xl font-bold text-white mb-3">100% Offline & Private</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							No internet permission requested or required. Zero telemetry, no cloud accounts, and no data tracking. All measurements, floor plans, and RF calculations remain strictly on your device.
-						</p>
-					</div>
-				</div>
+		<!-- ============ Screenshots ============ -->
+		<section
+			class="section-y relative overflow-hidden border-t border-white/70 bg-white/40"
+			aria-labelledby="screenshots-heading"
+		>
+			<div
+				class="pointer-events-none absolute left-1/2 top-10 h-72 w-[44rem] -translate-x-1/2 rounded-full opacity-50 blur-3xl"
+				style="background:radial-gradient(circle,rgba(250,204,21,0.5),rgba(251,146,60,0.35),transparent 70%)"
+				aria-hidden="true"
+			>
 			</div>
-		</section>
 
-		<!-- Frequently Asked Questions -->
-		<section class="py-24 border-t border-slate-800/80 bg-[#050814]">
-			<div class="container mx-auto px-6 max-w-4xl">
-				<div class="text-center mb-16">
-					<h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
-						Frequently Asked Questions
-					</h2>
-					<p class="text-slate-400">
-						Answers to common questions regarding Android permissions, scanning governors, and features.
-					</p>
+			<div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<SectionHeading
+					id="screenshots-heading"
+					eyebrow="The real app"
+					title="Every screen, exactly as it ships"
+					description="No mockups. These are live captures from WifiHeatmap 1.0.2 on Android, running on the same light and dark themes you can switch between in the app."
+				/>
+
+				<div class="mt-14">
+					<AppScreenshots tone="all" />
 				</div>
 
-				<div class="space-y-6">
-					<div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-						<h3 class="text-lg font-bold text-white mb-2">Why does the app require Location permission?</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							Starting with Android 6.0 (Marshmallow) and enforced in modern versions, Google considers Wi-Fi beacon frame scanning capable of identifying physical location. Android strictly requires the <code class="text-cyan-300 font-mono">ACCESS_FINE_LOCATION</code> permission to return Wi-Fi scan results. WifiHeatmap functions 100% locally and does not transmit your location anywhere.
-						</p>
-					</div>
-
-					<div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-						<h3 class="text-lg font-bold text-white mb-2">Why does it ask for Physical Activity permission?</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							The <code class="text-cyan-300 font-mono">ACTIVITY_RECOGNITION</code> permission powers the step detector sensor during floorplan heatmap surveys. This allows Pedestrian Dead Reckoning (PDR) to track your footsteps across the map in real-time as you walk.
-						</p>
-					</div>
-
-					<div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-						<h3 class="text-lg font-bold text-white mb-2">How can I bypass Android Wi-Fi scan throttling?</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							Android 9+ limits foreground Wi-Fi scans to 4 times per 2 minutes. On Android 10 and newer, you can disable this limitation in device settings: go to <em>Settings &gt; Developer Options &gt; Networking &gt; Wi-Fi scan throttling</em> and toggle it off. This allows scans every 2 to 4 seconds for ultra-dense surveys.
-						</p>
-					</div>
-
-					<div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-						<h3 class="text-lg font-bold text-white mb-2">Can WifiHeatmap crack passwords or hack networks?</h3>
-						<p class="text-slate-400 text-sm leading-relaxed">
-							No. WifiHeatmap is strictly a legal, professional diagnostic and surveying utility. It does not perform unauthorized penetration testing, packet injection, or credential cracking.
-						</p>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- Bottom Call-To-Action Banner -->
-		<section class="py-20 border-t border-slate-800 bg-gradient-to-b from-[#070c1c] to-[#050814] relative overflow-hidden">
-			<div class="container mx-auto px-6 max-w-5xl text-center relative z-10">
-				<h2 class="text-4xl sm:text-5xl font-black text-white tracking-tight mb-6">
-					Optimize Your Wireless Network Today
-				</h2>
-				<p class="text-slate-300 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-					Survey, analyze, and optimize your indoor wireless environment with professional precision and zero cloud telemetry.
-				</p>
-				<div class="flex justify-center items-center">
+				<div class="mt-14 flex justify-center">
 					<a
-						href="https://play.google.com/store/apps/details?id=com.heymeowcat.wifiheatmap"
+						href={PLAY_STORE_URL}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="inline-block transition-transform hover:scale-[1.03]"
+						class="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(120deg,#22d3ee,#38bdf8_45%,#818cf8)] px-6 py-3 text-sm font-bold text-slate-900 shadow-[0_14px_30px_-14px_rgba(14,165,233,0.95)] transition-transform duration-200 hover:scale-[1.03]"
 					>
-						<img
-							src={`${import.meta.env.BASE_URL}/google-play-badge-logo-svgrepo-com.svg`}
-							alt="Get it on Google Play"
-							class="h-16 w-auto drop-shadow-xl"
-						/>
+						<span>Try it free on Google Play</span>
+						<svg
+							class="h-4 w-4"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M5 12h14m-6-7 7 7-7 7"
+							></path>
+						</svg>
 					</a>
 				</div>
 			</div>
 		</section>
+
+		<!-- ============ How it works ============ -->
+		<section
+			class="section-y relative overflow-hidden border-t border-white/70 bg-white/70"
+			aria-labelledby="how-heading"
+		>
+			<HeatHaze class="-z-10" intensity={0.8} />
+
+			<div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<SectionHeading
+					id="how-heading"
+					eyebrow="How it works"
+					title="Four steps from floor plan to coverage map"
+				/>
+
+				<ol class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+					{
+						steps.map((step, index) => (
+							<li class="glass-rainbow relative overflow-hidden rounded-3xl p-6">
+								<span
+									class="font-mono text-sm font-black tracking-widest"
+									style="background-image:linear-gradient(90deg,#0ea5e9,#22c55e,#eab308,#f97316,#ef4444);background-clip:text;-webkit-background-clip:text;color:transparent"
+								>
+									{step.step}
+								</span>
+								<h3 class="mt-3 text-lg font-bold text-slate-900">{step.title}</h3>
+								<p class="mt-2 text-sm leading-relaxed text-slate-600">
+									{step.body}
+								</p>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</section>
+
+		<!-- ============ Capabilities grid ============ -->
+		<section
+			class="section-y border-t border-white/70 bg-white/40"
+			aria-labelledby="capabilities-heading"
+		>
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<SectionHeading
+					id="capabilities-heading"
+					eyebrow="Built for wireless professionals &amp; enthusiasts"
+					title="Enterprise-grade RF analysis, in your pocket"
+					description="From campus Wi-Fi surveys to home mesh tuning, WifiHeatmap gives you complete technical control of your wireless environment."
+				/>
+
+				<div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+					{
+						capabilities.map((item) => (
+							<article class="glass-rainbow group rounded-3xl p-7 transition-all hover:-translate-y-1 hover:shadow-[0_30px_60px_-28px_rgba(37,99,235,0.5)]">
+								<span
+									class:list={[
+										"mb-5 flex h-12 w-12 items-center justify-center rounded-2xl border transition-transform duration-300 group-hover:scale-110",
+										item.tone,
+									]}
+								>
+									<svg
+										class="h-6 w-6"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.8"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										viewBox="0 0 24 24"
+										aria-hidden="true"
+									>
+										<path d={item.icon} />
+									</svg>
+								</span>
+								<h3 class="text-lg font-bold text-slate-900">{item.title}</h3>
+								<p class="mt-2.5 text-sm leading-relaxed text-slate-600">
+									{item.body}
+								</p>
+							</article>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- ============ Use cases ============ -->
+		<section
+			class="section-y border-t border-white/70 bg-white/70"
+			aria-labelledby="usecases-heading"
+		>
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
+					<div>
+						<SectionHeading
+							id="usecases-heading"
+							align="left"
+							eyebrow="Who it's for"
+							title="One app, four very different jobs"
+							description="If a problem is about radio coverage or channel choice, WifiHeatmap measures it directly instead of guessing."
+						/>
+						<div class="mt-8 flex flex-wrap gap-3">
+							<a
+								href={`${base}/features/floorplan-heatmap/`}
+								class="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(120deg,#22d3ee,#38bdf8_45%,#818cf8)] px-5 py-3 text-sm font-bold text-slate-900 shadow-[0_14px_30px_-14px_rgba(14,165,233,0.95)] transition-transform duration-200 hover:scale-[1.03]"
+							>
+								<span>See floorplan surveys</span>
+							</a>
+							<a
+								href={`${base}/features/network-tools/`}
+								class="inline-flex items-center gap-2 rounded-xl border border-white/80 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-700 shadow-[0_0_0_1px_rgba(148,163,184,0.22)] backdrop-blur-md transition-all hover:-translate-y-0.5 hover:text-slate-900"
+							>
+								<span>See network diagnostics</span>
+							</a>
+						</div>
+					</div>
+
+					<ul class="grid gap-4 sm:grid-cols-2">
+						{
+							useCases.map((useCase) => (
+								<li class="glass rounded-2xl p-5">
+									<h3 class="text-base font-bold text-slate-900">{useCase.title}</h3>
+									<p class="mt-2 text-sm leading-relaxed text-slate-600">
+										{useCase.body}
+									</p>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<!-- ============ FAQ ============ -->
+		<section
+			class="section-y border-t border-white/70 bg-white/40"
+			aria-labelledby="faq-heading"
+		>
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<SectionHeading
+					id="faq-heading"
+					eyebrow="FAQ"
+					title="Frequently asked questions"
+					description="Everything about permissions, scan throttling, accuracy and privacy."
+				/>
+
+				<div class="mt-12">
+					<FaqList items={faqs} withSchema={false} />
+				</div>
+			</div>
+		</section>
+
+		<CtaBand />
 	</main>
-	<Footer />
+
+	<SiteFooter />
 </Layout>

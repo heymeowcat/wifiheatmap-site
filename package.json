@@ -1,26 +1,27 @@
 {
   "name": "wifiheatmap-site",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Official website for WifiHeatmap — offline Android Wi-Fi analyser and indoor site survey app.",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "fonts": "node scripts/fetch-fonts.mjs",
+    "assets": "node scripts/generate-assets.mjs",
+    "seo:audit": "node scripts/seo-audit.mjs",
+    "seo:audit:links": "node scripts/seo-audit.mjs --check-links"
   },
   "dependencies": {
-    "@astrojs/react": "^4.4.2",
-    "@astrojs/sitemap": "^3.6.0",
     "@tailwindcss/vite": "^4.1.18",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
     "astro": "^5.16.5",
-    "clsx": "^2.1.1",
-    "framer-motion": "^12.23.26",
-    "lucide-react": "^0.561.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "tailwind-merge": "^3.4.0",
+    "sharp": "^0.34.4",
     "tailwindcss": "^4.1.18"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

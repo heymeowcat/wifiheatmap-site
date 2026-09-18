@@ -1,0 +1,249 @@
+---
+import { SITE, PLAY_STORE_URL, NAV_LINKS, LEGAL_LINKS } from "../config";
+
+const base = SITE.base;
+const currentPath = Astro.url.pathname;
+
+const isActive = (match: string) =>
+	currentPath === `${base}${match}` ||
+	currentPath.startsWith(`${base}${match}`);
+
+const navLinks = [
+	...NAV_LINKS,
+	...LEGAL_LINKS.map((l) => ({ ...l, match: l.href })),
+];
+---
+
+<header
+	id="site-header"
+	class="sticky top-0 z-50 w-full border-b border-white/70 bg-white/70 backdrop-blur-xl backdrop-saturate-170"
+>
+	<!-- Scroll progress (heat ramp) -->
+	<div
+		id="scroll-progress"
+		class="h-[3px] w-full origin-left scale-x-0 bg-[linear-gradient(90deg,#0ea5e9,#22d3ee,#4ade80,#fde047,#fb923c,#ef4444)] transition-transform duration-150 ease-out"
+		aria-hidden="true"
+	></div>
+
+	<div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+		<!-- Brand -->
+		<a href={`${base}/`} class="group flex shrink-0 items-center gap-2.5">
+			<img
+				src={`${base}/icon.png`}
+				alt=""
+				aria-hidden="true"
+				width="38"
+				height="38"
+				loading="eager"
+				decoding="async"
+				class="h-9.5 w-9.5 rounded-xl object-contain shadow-[0_6px_18px_-6px_rgba(37,99,235,0.55)] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+			/>
+			<span class="flex flex-col leading-none">
+				<span class="text-[1.05rem] font-extrabold tracking-tight text-slate-900"
+					>WifiHeatmap</span
+				>
+				<span class="mt-0.5 hidden text-[10px] font-medium tracking-wide text-slate-500 sm:block"
+					>Wi-Fi Analyzer &amp; Site Survey</span
+				>
+			</span>
+		</a>
+
+		<!-- Desktop navigation -->
+		<nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
+			{
+				NAV_LINKS.map((link) => (
+					<a
+						href={`${base}${link.href}`}
+						aria-current={isActive(link.match) ? "page" : undefined}
+						class:list={[
+							"rounded-full px-3.5 py-2 text-sm font-semibold transition-all",
+							isActive(link.match)
+								? "bg-white text-slate-900 shadow-[0_0_0_1px_rgba(148,163,184,0.25),0_8px_20px_-12px_rgba(37,99,235,0.7)]"
+								: "text-slate-600 hover:bg-white/70 hover:text-slate-900",
+						]}
+					>
+						{link.label}
+					</a>
+				))
+			}
+			<a
+				href={`${base}/privacy/`}
+				aria-current={isActive("/privacy/") ? "page" : undefined}
+				class:list={[
+					"rounded-full px-3.5 py-2 text-sm font-semibold transition-all",
+					isActive("/privacy/")
+						? "bg-white text-slate-900 shadow-[0_0_0_1px_rgba(148,163,184,0.25)]"
+						: "text-slate-600 hover:bg-white/70 hover:text-slate-900",
+				]}
+				>Privacy</a
+			>
+		</nav>
+
+		<div class="flex items-center gap-2">
+			<a
+				href={PLAY_STORE_URL}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="hidden items-center gap-1.5 rounded-full bg-[linear-gradient(120deg,#22d3ee,#38bdf8_45%,#818cf8)] px-4 py-2.5 text-sm font-bold text-slate-900 shadow-[0_12px_28px_-12px_rgba(14,165,233,0.9)] transition-transform duration-200 hover:scale-[1.04] sm:inline-flex"
+			>
+				<span>Get the app</span>
+				<svg
+					class="h-3.5 w-3.5"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+				</svg>
+			</a>
+
+			<!-- Mobile toggle -->
+			<button
+				id="mobile-nav-toggle"
+				type="button"
+				aria-expanded="false"
+				aria-controls="mobile-nav"
+				aria-label="Open navigation menu"
+				class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-900/10 bg-white/75 text-slate-700 shadow-[0_0_0_1px_rgba(148,163,184,0.2)] transition-colors hover:bg-white lg:hidden"
+			>
+				<svg
+					id="icon-open"
+					class="h-5 w-5"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M4 7h16M4 12h16M4 17h16"></path>
+				</svg>
+				<svg
+					id="icon-close"
+					class="hidden h-5 w-5"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M6 6l12 12M18 6L6 18"></path>
+				</svg>
+			</button>
+		</div>
+	</div>
+
+	<!-- Mobile drawer -->
+	<div id="mobile-nav" class="hidden border-t border-white/70 bg-white/90 backdrop-blur-xl lg:hidden">
+		<nav
+			class="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6"
+			aria-label="Mobile"
+		>
+			{
+				navLinks.map((link) => (
+					<a
+						href={`${base}${link.href}`}
+						aria-current={isActive(link.match) ? "page" : undefined}
+						class:list={[
+							"flex items-center justify-between rounded-xl px-4 py-3 text-[0.95rem] font-semibold transition-colors",
+							isActive(link.match)
+								? "bg-white text-slate-900 shadow-[0_0_0_1px_rgba(148,163,184,0.25)]"
+								: "text-slate-600 hover:bg-white/70 hover:text-slate-900",
+						]}
+					>
+						{link.label}
+						<svg
+							class="h-4 w-4 opacity-40"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M9 5l7 7-7 7"
+							/>
+						</svg>
+					</a>
+				))
+			}
+			<a
+				href={PLAY_STORE_URL}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-[linear-gradient(120deg,#22d3ee,#38bdf8_45%,#818cf8)] px-4 py-3.5 text-sm font-bold text-slate-900"
+			>
+				Get WifiHeatmap on Google Play
+			</a>
+		</nav>
+	</div>
+</header>
+
+<script>
+	// --- Mobile drawer -----------------------------------------------------
+	const toggle = document.getElementById("mobile-nav-toggle");
+	const drawer = document.getElementById("mobile-nav");
+	const iconOpen = document.getElementById("icon-open");
+	const iconClose = document.getElementById("icon-close");
+
+	function setDrawer(open: boolean) {
+		if (!toggle || !drawer) return;
+		toggle.setAttribute("aria-expanded", String(open));
+		toggle.setAttribute(
+			"aria-label",
+			open ? "Close navigation menu" : "Open navigation menu",
+		);
+		drawer.classList.toggle("hidden", !open);
+		iconOpen?.classList.toggle("hidden", open);
+		iconClose?.classList.toggle("hidden", !open);
+	}
+
+	toggle?.addEventListener("click", () => {
+		setDrawer(toggle.getAttribute("aria-expanded") !== "true");
+	});
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") setDrawer(false);
+	});
+
+	// Close the drawer when a link is followed (same-page anchors too).
+	drawer?.addEventListener("click", (event) => {
+		if ((event.target as HTMLElement)?.closest("a")) setDrawer(false);
+	});
+
+	// --- Scroll progress ---------------------------------------------------
+	const progress = document.getElementById("scroll-progress");
+	let ticking = false;
+
+	function updateProgress() {
+		if (!progress) return;
+		const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+		const ratio = scrollable > 0 ? window.scrollY / scrollable : 0;
+		progress.style.transform = `scaleX(${Math.min(Math.max(ratio, 0), 1)})`;
+		ticking = false;
+	}
+
+	window.addEventListener(
+		"scroll",
+		() => {
+			if (!ticking) {
+				ticking = true;
+				window.requestAnimationFrame(updateProgress);
+			}
+		},
+		{ passive: true },
+	);
+	updateProgress();
+</script>
