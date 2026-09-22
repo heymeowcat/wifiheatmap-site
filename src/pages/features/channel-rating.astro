@@ -1,0 +1,135 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import FeaturePage from "../../components/FeaturePage.astro";
+import { graph, organizationSchema, appSchema, breadcrumbSchema } from "../../lib/schema";
+
+const title = "Wi-Fi Channel Rating & Optimizer — WifiHeatmap Android";
+const description =
+	"WifiHeatmap scores every 2.4 and 5 GHz channel from 1 to 5 stars using co-channel and adjacent-channel interference, so you configure the cleanest channel.";
+
+const structuredData = graph(
+	organizationSchema(),
+	appSchema(),
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Features", href: "/features/floorplan-heatmap/" },
+		{ label: "Channel rating" },
+	]),
+);
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/features/channel-rating/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<FeaturePage
+			slug="/features/channel-rating/"
+			eyebrow="Intelligent scoring"
+			title="Channel rating &amp; optimisation"
+			description="Stop guessing which channel to configure on your access points. WifiHeatmap scores every channel from one to five stars and recommends the cleanest ones, based on real co-channel and adjacent-channel interference around you."
+			accent="amber"
+			intro={`<p>Channel planning is a search problem. In the 2.4 GHz band there are only fourteen channels, they overlap heavily, and in a dense building every one of them may already be busy. On 5 GHz there are more channels, but wide 80 and 160 MHz transmissions mean each one still covers several 20 MHz slots.</p>
+<p>WifiHeatmap's channel rating resolves that search continuously. It watches the live scan results and scores every channel on a transparent <strong>one to five star scale</strong>, factoring in how many access points sit on the channel, how strong they are, and how much adjacent-channel bleed each one causes. The recommended channels are surfaced at the top so you can apply the change immediately.</p>
+<p>Because the rating is derived from live observations rather than a static channel table, it reflects <em>your</em> environment — the neighbours you actually share spectrum with right now.</p>`}
+			capabilities={[
+				{
+					title: "Transparent 1–5 star scoring",
+					body: "Every channel gets a rating you can audit against the access point counts shown beside it, rather than an opaque verdict.",
+				},
+				{
+					title: "Co-channel vs adjacent",
+					body: "Distinguishes access points sitting directly on a channel from those bleeding into it — a 1-star and a 4-star channel can look identical in a raw list.",
+				},
+				{
+					title: "Best-channel recommendation",
+					body: "The cleanest channels are listed first so you can set them on your access point in seconds.",
+				},
+				{
+					title: "Live access point counts",
+					body: "Each channel shows how many access points are currently in range, so the score can be sanity-checked at a glance.",
+				},
+				{
+					title: "Per-band analysis",
+					body: "Rate the 2.4 GHz and 5 GHz bands independently — the best channel on one band is frequently the worst on the other.",
+				},
+				{
+					title: "Signal weighting",
+					body: "A nearby, strong interferer counts for far more than a distant, weak one, matching how the medium actually behaves.",
+				},
+			]}
+			steps={[
+				{
+					title: "Scan the band",
+					body: "Open the Rating tab for the band you are tuning — 2.4 GHz and 5 GHz are scored separately.",
+				},
+				{
+					title: "Let it observe",
+					body: "The rating updates on every scan iteration, so give it a few seconds to build an accurate picture of the band.",
+				},
+				{
+					title: "Pick a recommended channel",
+					body: "Choose from the recommended channels at the top, or read the star rating for any specific channel.",
+				},
+				{
+					title: "Configure & re-check",
+					body: "Set the channel on your access point, then re-scan to confirm the score improves.",
+				},
+			]}
+			specs={[
+				{ label: "Score range", value: "1 to 5 stars, recalculated on every scan iteration" },
+				{ label: "Bands rated", value: "2.4 GHz and 5 GHz" },
+				{ label: "Inputs", value: "Co-channel count, adjacent-channel bleed, per-AP signal strength" },
+				{ label: "Access point counts", value: "Displayed per channel alongside the rating" },
+				{ label: "Recommendations", value: "Ranked list of the cleanest available channels" },
+				{ label: "Scan dependency", value: "Needs a few seconds of live scanning to stabilise the score" },
+				{ label: "Network requirement", value: "None — all scoring is computed on-device" },
+			]}
+			faqs={[
+				{
+					question: "Why do the 2.4 GHz recommendations never include channels 2, 3, 4 or 5?",
+					answer:
+						"Because 20 MHz channels 2, 3, 4 and 5 overlap almost completely with the more widely used channel 1, they are rarely the cleanest choice. Standard channel plans for 2.4 GHz use only 1, 6 and 11 for exactly this reason — five non-overlapping channels is not physically possible in that band.",
+				},
+				{
+					question: "Does a 5-star channel mean I will get full speed?",
+					answer:
+						"No. The star rating measures spectrum cleanliness — how little interference a channel carries. Your actual throughput also depends on channel width, transmit power, distance, the client device and the uplink. A clean channel is a necessary condition for good throughput, not a guarantee of it.",
+				},
+				{
+					question: "How often should I re-check the rating?",
+					answer:
+						"Whenever the RF environment changes materially: new neighbours, a new access point, a router firmware update, or a big change in the number of devices on your network. The rating is a snapshot of current conditions, not a permanent property of the channel.",
+				},
+				{
+					question: "Should I use 20 MHz channels on 5 GHz?",
+					answer:
+						"In a dense environment, yes — narrow channels reduce overlap and raise signal-to-noise ratio, which often improves real throughput despite the lower nominal peak speed. In a clean environment, 80 MHz is usually worth the extra width.",
+				},
+			]}
+			related={[
+				{
+					label: "Spectrum Analyzer",
+					href: "/features/spectrum-analyzer/",
+					blurb: "See the raw overlap the rating is calculated from.",
+				},
+				{
+					label: "Floorplan Heatmap",
+					href: "/features/floorplan-heatmap/",
+					blurb: "Check whether your chosen channel reaches the weak areas.",
+				},
+				{
+					label: "Network Tools",
+					href: "/features/network-tools/",
+					blurb: "Measure before-and-after throughput to prove the change worked.",
+				},
+			]}
+		/>
+	</main>
+	<SiteFooter />
+</Layout>

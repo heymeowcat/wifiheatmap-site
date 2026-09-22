@@ -1,0 +1,136 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import FeaturePage from "../../components/FeaturePage.astro";
+import { graph, organizationSchema, appSchema, breadcrumbSchema } from "../../lib/schema";
+
+const title = "Floorplan Wi-Fi Heatmap Survey App — WifiHeatmap Android";
+const description =
+	"Map Wi-Fi coverage on any floor plan. Track your walk with Pedestrian Dead Reckoning, interpolate signal with IDW and export heat maps — fully offline.";
+
+const structuredData = graph(
+	organizationSchema(),
+	appSchema(),
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Features", href: "/features/floorplan-heatmap/" },
+		{ label: "Floorplan heatmap" },
+	]),
+);
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/features/floorplan-heatmap/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<FeaturePage
+			slug="/features/floorplan-heatmap/"
+			eyebrow="PDR indoor survey"
+			title="Floorplan Wi-Fi heatmap surveys"
+			description="Import any floor plan, walk the space, and watch an interpolated RF coverage field paint itself in real time. This is the feature that turns WifiHeatmap from a network viewer into a site survey tool."
+			accent="cyan"
+			intro={`<p>The heatmap survey is the core of WifiHeatmap. You import a picture of the floor — an architect's plan, a warehouse layout, or even a photo of the floor — and the app turns your phone into a walk-around RF measurement rig.</p>
+<p>As you walk, Android's hardware step detector counts your steps and the magnetometer supplies your heading. WifiHeatmap fuses the two into a <strong>Pedestrian Dead Reckoning (PDR)</strong> track, plotting your position on the plan automatically. Every step also records the current signal strength, and those samples are interpolated across the floor using <strong>Inverse Distance Weighting (IDW)</strong> — the same weighting approach used in classic radio propagation modelling.</p>
+<p>The result is a colour-graded field where warm colours show strong coverage and cool colours show weak coverage, so dead zones and hot spots are obvious at a glance rather than inferred from a list of access points.</p>`}
+			capabilities={[
+				{
+					title: "Any image works as a floor plan",
+					body: "Load a PNG, JPEG or screenshot of your floor plan, then calibrate the scale against a known measurement so distances on screen are real.",
+				},
+				{
+					title: "Weinberg step-length model",
+					body: "Step length is derived from the adaptive Weinberg formula, tuned to your height, rather than a naive fixed stride — so the track stays accurate over long walks.",
+				},
+				{
+					title: "Inverse Distance Weighting",
+					body: "Signal contours between your samples are interpolated with IDW, giving a smooth, physically plausible coverage gradient instead of isolated dots.",
+				},
+				{
+					title: "Multi-floor buildings",
+					body: "Barometric altitude detection separates floors automatically, so you can survey level 1 and level 2 without mixing the readings together.",
+				},
+				{
+					title: "Four survey modes",
+					body: "Walk mode tracks you continuously, A→B mode walks a straight line between two tapped points, Tap mode places a sample manually and GPS mode uses satellites.",
+				},
+				{
+					title: "Exportable reports",
+					body: "Save a high-resolution heat map image for documentation, or export the raw survey CSV for analysis in a spreadsheet or Ekahau-style tool.",
+				},
+			]}
+			steps={[
+				{
+					title: "Import & calibrate",
+					body: "Load your floor plan image and set the scale by tapping two points and entering the real-world distance between them.",
+				},
+				{
+					title: "Start the survey",
+					body: "Choose Walk, A→B, Tap or GPS. The app begins capturing a fresh reading on every scan iteration.",
+				},
+				{
+					title: "Walk the space",
+					body: "Move at a normal pace. Each step places a sample with your live dBm value and heading on the plan.",
+				},
+				{
+					title: "Review & export",
+					body: "Watch the coverage field fill in, then export a heat report image or the raw CSV when the survey is done.",
+				},
+			]}
+			specs={[
+				{ label: "Position tracking", value: "Pedestrian Dead Reckoning — adaptive Weinberg step length fused with magnetometer heading" },
+				{ label: "Signal interpolation", value: "Inverse Distance Weighting (IDW) across sampled points" },
+				{ label: "Floor separation", value: "Barometric altitude change detection for multi-floor surveys" },
+				{ label: "Survey modes", value: "Walk, A→B, Tap pin and GPS-assisted positioning" },
+				{ label: "Scale calibration", value: "Two-point calibration against a known real-world distance" },
+				{ label: "Exports", value: "Heat map image report and raw survey CSV" },
+				{ label: "Network requirement", value: "None. The entire survey runs offline on-device." },
+				{ label: "Permissions used", value: "ACCESS_FINE_LOCATION (scan results) and ACTIVITY_RECOGNITION (step detector)" },
+			]}
+			faqs={[
+				{
+					question: "How accurate is the heatmap?",
+					answer:
+						"Accuracy is a function of sampling density. IDW is exact at your measured points and interpolates smoothly between them, so the error grows with distance from the nearest sample. Walk a tighter grid than you think you need, and prioritise areas where you actually care about coverage. Walls, reinforced concrete and metal shelving all attenuate and reflect RF, which the interpolation cannot know about.",
+				},
+				{
+					question: "Why does my track drift from where I actually walked?",
+					answer:
+						"Drift is inherent to Pedestrian Dead Reckoning: every step has a small length error and every heading reading has a small angular error, and those compound over distance. Keep the phone in a consistent position and orientation in your hand, avoid abrupt direction changes, and re-anchor with Tap mode if you need a known reference point.",
+				},
+				{
+					question: "Can I survey more than one floor?",
+					answer:
+						"Yes. WifiHeatmap uses the barometric pressure sensor to detect altitude changes, so consecutive floors are separated automatically. Make sure your device has a barometer — many budget Android phones do not.",
+				},
+				{
+					question: "What format is the exported report?",
+					answer:
+						"You can export a heat map image, which is what most people hand to a client, and a CSV of the raw survey samples containing position, signal strength, timestamp and SSID for offline analysis.",
+				},
+			]}
+			related={[
+				{
+					label: "Spectrum Analyzer",
+					href: "/features/spectrum-analyzer/",
+					blurb: "See which channels are actually carrying traffic — the other half of a good survey.",
+				},
+				{
+					label: "Channel Rating",
+					href: "/features/channel-rating/",
+					blurb: "Turn your coverage map into a concrete channel configuration recommendation.",
+				},
+				{
+					label: "Network Tools",
+					href: "/features/network-tools/",
+					blurb: "Speed, ping, traceroute and DNS diagnostics once the survey is complete.",
+				},
+			]}
+		/>
+	</main>
+	<SiteFooter />
+</Layout>

@@ -1,0 +1,678 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import FaqList from "../../components/FaqList.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { SITE, PLAY_STORE_URL, UPSTREAM_WIKI } from "../../config";
+import {
+	graph,
+	organizationSchema,
+	breadcrumbSchema,
+} from "../../lib/schema";
+
+const title = "Which Wi-Fi Channel Should You Use? 2.4 / 5 / 6 GHz Guide";
+const description =
+	"Only 1, 6 and 11 work cleanly on 2.4 GHz. How to pick the best Wi-Fi channel on every band, read dBm correctly and find the cleanest channel in minutes.";
+
+const published = "2026-09-14";
+const updated = "2026-10-20";
+
+const toc = [
+	{ id: "why-it-matters", label: "Why channel choice matters" },
+	{ id: "band-24", label: "2.4 GHz: only three usable channels" },
+	{ id: "band-5", label: "5 GHz: more channels, wider channels" },
+	{ id: "band-6", label: "6 GHz: the Wi-Fi 6E / 7 frontier" },
+	{ id: "dbm", label: "Reading dBm correctly" },
+	{ id: "width", label: "Channel width: speed vs interference" },
+	{ id: "how-to", label: "How to find your best channel" },
+	{ id: "no-clean-channel", label: "When no channel is clean" },
+	{ id: "sources", label: "Sources and further reading" },
+];
+
+const structuredData = graph(
+	organizationSchema(),
+	{
+		"@context": "https://schema.org",
+		"@type": "Article",
+		"@id": `${SITE.origin}${SITE.base}/guides/wifi-channel-guide/#article`,
+		headline: title,
+		description,
+		datePublished: published,
+		dateModified: updated,
+		author: {
+			"@type": "Person",
+			name: SITE.author,
+			url: `${SITE.origin}${SITE.base}/about/`,
+		},
+		publisher: {
+			"@type": "Organization",
+			name: SITE.authorHandle,
+			url: `${SITE.origin}${SITE.base}/`,
+			logo: {
+				"@type": "ImageObject",
+				url: `${SITE.origin}${SITE.base}/icon.png`,
+			},
+		},
+		mainEntityOfPage: {
+			"@type": "WebPage",
+			"@id": `${SITE.origin}${SITE.base}/guides/wifi-channel-guide/`,
+		},
+		image: `${SITE.origin}${SITE.base}/og-image.png`,
+		inLanguage: "en",
+		keywords:
+			"best wifi channel, 2.4 ghz channels, 5 ghz channels, wifi channel selection, wifi analyzer android, channel width, wifi interference",
+		isAccessibleForFree: true,
+	},
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Guides", href: "/guides/wifi-channel-guide/" },
+		{ label: "Wi-Fi channel guide" },
+	]),
+);
+
+const faqs = [
+	{
+		question: "Why are only channels 1, 6 and 11 recommended on 2.4 GHz?",
+		answer:
+			"Each 2.4 GHz channel is 22 MHz wide while the channels themselves are spaced 5 MHz apart, so neighbouring channels overlap heavily. Channels 1, 6 and 11 are the only three that do not overlap at all in the 2.4 GHz band. Using anything else — 2, 3, 4, 5, 7, 8, 9 or 10 — means you are sitting inside somebody else's channel.",
+	},
+	{
+		question: "Should I use 2.4 GHz or 5 GHz?",
+		answer:
+			"Use 2.4 GHz for range and wall penetration, and 5 GHz for speed and a cleaner spectrum. If your device supports 5 GHz and you are within reasonable range of the access point, prefer 5 GHz. Modern routers are usually best configured with both bands enabled and the same SSID, letting the client roam between them.",
+	},
+	{
+		question: "Is it better to use a wider channel?",
+		answer:
+			"Wider channels are faster in a clean environment and slower in a crowded one. 80 or 160 MHz on 5 GHz gives you high peak throughput if nothing else overlaps, but on a busy band it means you are sharing with far more neighbours. When the channel rating shows congestion, narrower is usually the better trade.",
+	},
+	{
+		question: "How do I know if my Wi-Fi problem is channel congestion?",
+		answer:
+			"Run an analyser and look at the channel graph. If the curves on your channel overlap with several neighbours, or the channel rating for your channel is 2 stars or below while another channel scores 4 or 5, congestion is the likely cause. If your channel is clean and you still have poor throughput, the problem is more likely range, interference from non-Wi-Fi sources, or your internet connection.",
+	},
+	{
+		question: "Does the channel number matter on 5 GHz?",
+		answer:
+			"Less so, because 5 GHz has many more channels and less overlap at 20 MHz widths. But it still matters when you use wide channels: an 80 MHz channel on channel 36 spans channels 36 to 48, so it collides with anyone using 40, 44 or 48. The 5 GHz band is also split into UNII-1, UNII-2 and UNII-3 sub-bands, and channel 165 exists as a special 20 MHz-only channel at the top.",
+	},
+	{
+		question: "How often should I change channels?",
+		answer:
+			"Only when the environment changes materially — new neighbours, a new access point nearby, or a router firmware update that picks a bad default. Check with an analyser a few times a year, and any time performance drops unexpectedly. A channel that was clean six months ago may not be now.",
+	},
+];
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/guides/wifi-channel-guide/"
+	structuredData={structuredData}
+	ogType="article"
+>
+	<SiteHeader />
+	<main id="main">
+		<PageHero
+			eyebrow="Guide"
+			title="Which Wi-Fi channel should you use?"
+			description="The honest, practical answer for 2.4, 5 and 6 GHz — including why only three channels work on 2.4 GHz, how to read dBm, and how to find the cleanest channel with a free Android analyser in about five minutes."
+			crumbs={[{ label: "Guides", href: "/guides/wifi-channel-guide/" }, { label: "Wi-Fi channel guide" }]}
+			accent="cyan"
+		/>
+
+		<!-- ============ Article ============ -->
+		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+				<!-- Table of contents -->
+				<aside class="lg:col-span-3">
+					<nav
+						aria-labelledby="toc-heading"
+						class="glass sticky top-24 rounded-2xl p-5"
+					>
+						<h2
+							id="toc-heading"
+							class="text-xs font-bold uppercase tracking-wider text-slate-900"
+						>
+							On this page
+						</h2>
+						<ol class="mt-4 space-y-2.5 text-sm">
+							{
+								toc.map((item) => (
+									<li>
+										<a
+											href={`#${item.id}`}
+											class="text-slate-500 transition-colors hover:text-sky-700"
+										>
+											{item.label}
+										</a>
+									</li>
+								))
+							}
+						</ol>
+					</nav>
+				</aside>
+
+				<!-- Body -->
+				<article class="lg:col-span-9">
+					<div class="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500">
+						<span class="chip">Published {published}</span>
+						<span class="chip">Updated {updated}</span>
+						<span class="chip">9 min read</span>
+						<span class="chip">
+							Written by {SITE.author}
+						</span>
+					</div>
+
+					<div
+						class="glass rounded-3xl p-6 text-pretty leading-relaxed text-slate-600 sm:p-9"
+					>
+						<p class="text-lg">
+							Most "change my Wi-Fi channel" advice is either a list of
+							channel numbers or folklore. This guide gives you the reasoning, so
+							you can work out the right channel for <em>your</em> environment
+							instead of copying someone else's.
+						</p>
+
+						<h2
+							id="why-it-matters"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							Why channel choice matters
+						</h2>
+						<p>
+							Your router and your neighbours share the same radio spectrum. In
+							the 2.4 GHz band there is very little of it. When two access
+							points transmit on overlapping channels, their signals interfere at
+							the receiver, which the radio layer resolves by retrying at a lower
+							rate — or by dropping frames entirely. You feel that as slow
+							web pages, video that buffers, and video calls that stutter.
+						</p>
+						<p>
+							Changing your channel does not give you a faster internet
+							connection. It gives you <em>more of the spectrum you already
+							have</em>. On a congested 2.4 GHz network that difference is often
+							the difference between unusable and fine.
+						</p>
+
+						<h2
+							id="band-24"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							2.4 GHz: only three usable channels
+						</h2>
+						<p>
+							2.4 GHz is the crowded band. It has 14 channels in most of the
+							world (channel 14 is Japan-only), but each 2.4 GHz channel is
+							22 MHz wide while the channels are spaced only 5 MHz apart. Every
+							channel therefore bleeds into its neighbours.
+						</p>
+						<p>
+							Exactly three pairs of channels do not overlap at all: <strong
+								>1, 6 and 11</strong
+							>. That is the entire reason the "1-6-11 rule" exists. Choosing
+							channel 3 because it "sounds central" puts you directly inside
+							channel 1's coverage.
+						</p>
+
+						<div class="glass mt-6 overflow-hidden rounded-2xl">
+							<table class="w-full border-collapse text-left text-sm">
+								<caption class="sr-only">
+									2.4 GHz channel overlap comparison
+								</caption>
+								<thead>
+									<tr class="border-b border-slate-900/8">
+										<th scope="col" class="px-5 py-3 font-semibold text-slate-600"
+											>Channel</th
+										>
+										<th scope="col" class="px-5 py-3 font-semibold text-slate-600"
+											>Overlaps</th
+										>
+										<th scope="col" class="px-5 py-3 font-semibold text-slate-600"
+											>Verdict</th
+										>
+									</tr>
+								</thead>
+								<tbody>
+									{
+										[
+											["1", "2, 3, 4, 5", "Use it"],
+											["2", "1, 3, 4, 5, 6", "Avoid"],
+											["3", "1–7", "Avoid"],
+											["4", "1–8", "Avoid"],
+											["5", "1–10", "Avoid"],
+											["6", "2–10", "Use it"],
+											["7", "3–12", "Avoid"],
+											["8", "4–13", "Avoid"],
+											["9", "5–13", "Avoid"],
+											["10", "6–13", "Avoid"],
+											["11", "7–13", "Use it"],
+											["12", "8–14", "Avoid"],
+											["13", "9–14", "Avoid"],
+										].map((row) => (
+											<tr class="border-b border-slate-900/8 last:border-0">
+												<th scope="row" class="px-5 py-2.5 font-mono font-bold text-slate-900">
+													CH {row[0]}
+												</th>
+												<td class="px-5 py-2.5 font-mono text-xs text-slate-500">
+													{row[1]}
+												</td>
+												<td class="px-5 py-2.5">
+													<span
+														class:list={[
+															"rounded-md px-2 py-0.5 text-xs font-bold",
+															row[2] === "Use it"
+																? "bg-emerald-500/15 text-emerald-700"
+																: "bg-white/70 text-slate-500",
+														]}
+													>
+														{row[2]}
+														</span>
+												</td>
+											</tr>
+										))
+									}
+								</tbody>
+							</table>
+						</div>
+
+						<p class="mt-6">
+							One caveat worth knowing: on 2.4 GHz, most client devices ignore
+							your channel setting anyway. 2.4 GHz clients are allowed to use
+							any channel within the range they can hear, so the effective
+							channel is decided by the client radios around you, not by your
+							router. The best you can do is pick 1, 6 or 11 and use a 20 MHz
+							width.
+						</p>
+
+						<h2
+							id="band-5"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							5 GHz: more channels, wider channels
+						</h2>
+						<p>
+							5 GHz has far more spectrum than 2.4 GHz and far fewer legacy
+							users, so congestion is rarer. It is also the band where channel
+							width matters most, because an 80 MHz channel occupies four 20 MHz
+							slots and a 160 MHz channel occupies eight.
+						</p>
+						<ul class="mt-5 list-disc space-y-2.5 pl-5 text-slate-500">
+							<li>
+								<strong class="text-slate-700">20 MHz channels</strong> — maximum
+								isolation, lowest peak speed. The right choice in a dense
+								apartment block.
+							</li>
+							<li>
+								<strong class="text-slate-700">40 MHz channels</strong> — the
+								sensible compromise on 5 GHz.
+							</li>
+							<li>
+								<strong class="text-slate-700">80 MHz channels</strong> — the
+								default on most modern routers and usually fine in a house
+								or small office.
+							</li>
+							<li>
+								<strong class="text-slate-700">160 MHz channels</strong> — only
+								worth it in a clean environment; they overlap almost
+								everything else on the band.
+							</li>
+						</ul>
+						<p class="mt-5">
+							Also note that the 5 GHz band is split into three UNII
+							sub-bands — UNII-1 (5.15–5.25 GHz), UNII-2 (5.25–5.35 GHz) and
+							UNII-3 (5.725–5.85 GHz). UNII-2 and UNII-3 carry stricter
+							radar-sharing rules in some regulatory domains, and channel 165
+							is a 20 MHz-only channel that many devices use precisely because
+							it sits at the edge of the band.
+						</p>
+
+						<h2
+							id="band-6"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							6 GHz: the Wi-Fi 6E / 7 frontier
+						</h2>
+						<p>
+							6 GHz adds a huge, clean, lightly used band — up to 1,200 MHz of
+							spectrum in some regions. Because it is new, the practical
+							advice is simple: if your access point and your client both
+							support 6 GHz, use it, and keep the channel width at 80 or 160
+							MHz.
+						</p>
+						<p>
+							The trade-off is range. 6 GHz signals attenuate faster through
+							walls than 5 GHz, so it is a band for the same room or an open
+							office, not for the whole house. A dual-band or tri-band access
+							point that serves 2.4/5 GHz alongside 6 GHz is the usual answer.
+						</p>
+
+						<h2
+							id="dbm"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							Reading dBm correctly
+						</h2>
+						<p>
+							Signal strength is measured in dBm, where a more negative number
+							is weaker. The scale is logarithmic, which is why 3 dB is
+							roughly a doubling of power — and why a 3 dB difference in
+							signal strength roughly halves the usable data rate.
+						</p>
+
+						<div class="glass mt-6 overflow-hidden rounded-2xl">
+							<table class="w-full border-collapse text-left text-sm">
+								<caption class="sr-only">
+									Signal strength in dBm and what it means in practice
+								</caption>
+								<thead>
+									<tr class="border-b border-slate-900/8">
+										<th scope="col" class="px-5 py-3 font-semibold text-slate-600"
+											>Signal</th
+										>
+										<th scope="col" class="px-5 py-3 font-semibold text-slate-600"
+											>Quality</th
+										>
+										<th scope="col" class="px-5 py-3 font-semibold text-slate-600"
+											>What you get</th
+										>
+									</tr>
+								</thead>
+								<tbody>
+									{
+										[
+											["-30 dBm", "Excellent", "Full speed, right next to the access point"],
+											["-50 dBm", "Good", "Comfortable for streaming and calls"],
+											["-67 dBm", "Reliable", "The practical threshold for everyday use"],
+											["-70 dBm", "Weak", "Dropouts, buffering and stalls start here"],
+											["-80 dBm", "Very weak", "Unreliable for anything but basic traffic"],
+											["-90 dBm", "Unusable", "Effectively no connection"],
+										].map((row) => (
+											<tr class="border-b border-slate-900/8 last:border-0">
+												<th scope="row" class="px-5 py-2.5 font-mono font-bold text-slate-900">
+													{row[0]}
+												</th>
+												<td class="px-5 py-2.5 text-slate-600">{row[1]}</td>
+												<td class="px-5 py-2.5 text-slate-500">{row[2]}</td>
+											</tr>
+										))
+									}
+								</tbody>
+							</table>
+						</div>
+
+						<p class="mt-6">
+							Those thresholds describe the signal of <em>your</em> access
+							point. For an interfering neighbour, what matters is their
+							signal strength <em>at your position</em> — a strong neighbour at
+							-55 dBm hurts far more than a distant one at -85 dBm.
+						</p>
+
+						<h2
+							id="width"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							Channel width: speed versus interference
+						</h2>
+						<p>
+							Channel width is the other half of the equation, and it is the
+							one most people leave at the factory default. Doubling the width
+							doubles the theoretical airtime per transmission — but it also
+							doubles the number of neighbours you have to share with.
+						</p>
+						<p class="mt-4">
+							There is a well-known crossover: in a noisy environment, real
+							throughput can be <em>higher</em> on a narrower channel, because
+							successful transmissions dominate. If your throughput on an
+							80 MHz channel is disappointing, try 40 MHz or 20 MHz and measure
+							again. On 2.4 GHz, always use 20 MHz — 40 MHz on 2.4 GHz destroys
+							the one property that makes the band usable.
+						</p>
+
+						<h2
+							id="how-to"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							How to find your best channel
+						</h2>
+						<p>
+							This is the part that actually takes five minutes. You need an
+							analyser that shows you the channel graph and the rating for your
+							band.
+						</p>
+						<ol class="mt-6 space-y-5">
+							{
+								[
+									{
+										title: "Pick the band you are actually using",
+										body: "If your phone connects on 5 GHz, optimise 5 GHz. If it only ever connects on 2.4 GHz, that is your problem to solve first — and it is usually a distance or a client-capability issue.",
+									},
+									{
+										title: "Let it scan for 30–60 seconds",
+										body: "Channel occupancy changes as neighbours come and go. A rating based on two scans is meaningless; give it time to build a representative sample.",
+									},
+									{
+										title: "Read the recommended channels",
+										body: "WifiHeatmap lists the cleanest channels at the top of the Rating tab, and shows you how many access points sit on each channel so you can sanity-check the score.",
+									},
+									{
+										title: "Look at the graph, not just the number",
+										body: "Open the channel graph and check whether any curve overlaps the channel you are about to choose. If a tall curve crosses it, that neighbour will hurt you regardless of how good the rating looks.",
+									},
+									{
+										title: "Apply it and re-measure",
+										body: "Set the channel on your access point, then run a speed test before and after. If there is no improvement, your problem was not congestion.",
+									},
+								].map((step, index) => (
+									<li class="flex gap-4">
+										<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50 font-mono text-xs font-bold text-sky-700">
+											{index + 1}
+										</span>
+										<div>
+											<h3 class="text-base font-bold text-slate-900">{step.title}</h3>
+											<p class="mt-1 text-sm leading-relaxed text-slate-500">
+												{step.body}
+											</p>
+										</div>
+									</li>
+								))
+							}
+						</ol>
+
+						<div class="glass-rainbow mt-8 rounded-2xl border-cyan-200 p-5">
+							<p class="text-sm leading-relaxed text-slate-600">
+								<strong class="text-slate-900">Do it on Android, for free.</strong>
+								WifiHeatmap is a free, fully offline Wi-Fi analyser and indoor
+								site survey app. The channel graph, the star rating and the
+								recommended channels all work without an account, without
+								internet and without telemetry.
+								<a
+									href={PLAY_STORE_URL}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="font-bold text-sky-700 underline underline-offset-4 hover:text-cyan-800"
+								>
+									Get WifiHeatmap on Google Play
+								</a>
+							</p>
+						</div>
+
+						<h2
+							id="no-clean-channel"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							When no channel is clean
+						</h2>
+						<p>
+							In a genuinely crowded building — an apartment block, a hotel, a
+							shared office — every channel may score poorly. Changing channel
+							then buys you a smaller amount of interference rather than none.
+							In that situation, change strategy rather than channel:
+						</p>
+						<ul class="mt-5 list-disc space-y-2.5 pl-5 text-slate-500">
+							<li>
+								<strong class="text-slate-700">Reduce the width.</strong> Drop
+								to 20 MHz on 2.4 GHz and 40 MHz on 5 GHz. Isolation improves
+								immediately.
+							</li>
+							<li>
+								<strong class="text-slate-700">Lower the transmit power.</strong>
+								Reducing it shrinks your coverage footprint, which reduces how
+								strongly you interfere with neighbours — and, more importantly,
+								how strongly they interfere with you near the access point.
+							</li>
+							<li>
+								<strong class="text-slate-700">Move the access point.</strong>
+								For a home network, the highest-impact change is usually
+								physical. A survey heatmap shows you exactly where the dead
+								zone is.
+							</li>
+							<li>
+								<strong class="text-slate-700">Add capacity.</strong> A second
+								access point on a different channel usually beats endless
+								channel tuning.
+							</li>
+							<li>
+								<strong class="text-slate-700">Find the non-Wi-Fi culprit.</strong>
+								Micro-wave ovens, Bluetooth devices, poorly shielded
+								electronics and some LED lighting interfere on 2.4 GHz and no
+								channel change will fix them.
+							</li>
+						</ul>
+
+						<h2
+							id="sources"
+							class="mt-12 scroll-mt-28 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+						>
+							Sources and further reading
+						</h2>
+						<p>
+							The technical details above follow the published standards and
+							guidance. If you want to go deeper:
+						</p>
+						<ul class="mt-5 space-y-3">
+							{
+								[
+									{
+										label: "List of WLAN channels (Wikipedia)",
+										href: "https://en.wikipedia.org/wiki/List_of_WLAN_channels",
+									},
+									{
+										label: "Free-space path loss — how distance estimates work",
+										href: "https://en.wikipedia.org/wiki/Free-space_path_loss",
+									},
+									{
+										label: "IEEE 802.11 — Wireless LAN standards",
+										href: "https://en.wikipedia.org/wiki/IEEE_802.11",
+									},
+									{
+										label: "Android Wi-Fi scanning throttling (project wiki)",
+										href: UPSTREAM_WIKI.throttling,
+									},
+									{
+										label: "Location permission requirements for Wi-Fi scanning",
+										href: UPSTREAM_WIKI.permissions,
+									},
+								].map((link) => (
+									<li>
+										<a
+											href={link.href}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 underline underline-offset-4 hover:text-cyan-800"
+										>
+											{link.label}
+											<svg
+												class="h-3 w-3"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2.5"
+												viewBox="0 0 24 24"
+												aria-hidden="true"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													d="M14 5l7 7m0 0l-7 7m7-7H3"
+												/>
+											</svg>
+										</a>
+									</li>
+								))
+							}
+						</ul>
+					</div>
+
+					<!-- Author box (E-E-A-T) -->
+					<div class="glass mt-10 rounded-3xl p-6 sm:p-8">
+						<div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+							<img
+								src={`${SITE.base}/icon.png`}
+								alt=""
+								aria-hidden="true"
+								width="64"
+								height="64"
+								loading="lazy"
+								decoding="async"
+								class="h-16 w-16 shrink-0 rounded-2xl object-contain"
+							/>
+							<div>
+								<h2 class="text-base font-bold text-slate-900">
+									Written by {SITE.author}
+								</h2>
+								<p class="mt-1 text-sm leading-relaxed text-slate-500">
+									Developer of WifiHeatmap, the open-source (GPL-3.0) Android
+									Wi-Fi analyser and indoor site survey app. The measurements
+									behind this guide come from the same tool the app uses.
+								</p>
+								<a
+									href={`${SITE.base}/about/`}
+									class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 hover:text-cyan-800"
+								>
+									More about the app
+									<svg
+										class="h-3.5 w-3.5"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										viewBox="0 0 24 24"
+										aria-hidden="true"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M5 12h14m-6-7 7 7-7 7"
+										/>
+									</svg>
+								</a>
+							</div>
+						</div>
+					</div>
+				</article>
+			</div>
+		</div>
+
+		<!-- ============ FAQ ============ -->
+		<section
+			class="section-y mt-10 border-t border-slate-900/8 bg-white/40"
+			aria-labelledby="guide-faq-heading"
+		>
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<SectionHeading
+					id="guide-faq-heading"
+					eyebrow="FAQ"
+					title="Channel selection questions"
+				/>
+				<div class="mt-12">
+					<FaqList items={faqs} />
+				</div>
+			</div>
+		</section>
+
+		<CtaBand />
+	</main>
+	<SiteFooter />
+</Layout>

@@ -1,0 +1,159 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import FeaturePage from "../../components/FeaturePage.astro";
+import {
+	graph,
+	organizationSchema,
+	appSchema,
+	breadcrumbSchema,
+} from "../../lib/schema";
+
+const title = "Android Network Tools — Ping, Traceroute, DNS & Speed Test";
+const description =
+	"Full Android network toolkit: router admin shortcut, speed tests, ICMP ping and jitter, traceroute, A/AAAA/PTR DNS lookup and a BSSID roaming logger.";
+
+const structuredData = graph(
+	organizationSchema(),
+	appSchema(),
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Features", href: "/features/floorplan-heatmap/" },
+		{ label: "Network tools" },
+	]),
+);
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/features/network-tools/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<FeaturePage
+			slug="/features/network-tools/"
+			eyebrow="Diagnostics &amp; performance"
+			title="The built-in network toolkit"
+			description="A complete diagnostics bench for any wireless network, in your pocket. Router admin shortcut, speed tests, ping, traceroute, DNS lookup and a roaming logger — pointed only at hosts you choose."
+			accent="indigo"
+			intro={`<p>Once you have measured your network, you need to know what to do about it. The Network Tools screen turns WifiHeatmap into a small diagnostics bench that sits alongside the RF analysis tools.</p>
+<p>It starts with the most practical shortcut: the app detects your gateway IP and opens your router's admin page in one tap, so you can go straight from "my Wi-Fi is slow" to the configuration screen that changes it. From there you get real throughput measurements, ICMP ping with jitter and packet-loss reporting, hop-by-hop traceroute, and full DNS lookups including A, AAAA and PTR reverse records.</p>
+<p>Every one of these tools sends packets only to a host you explicitly choose — your gateway, your own subnet, or a domain or IP address you type in. Nothing is sent anywhere else.</p>`}
+			capabilities={[
+				{
+					title: "One-tap router admin",
+					body: "Detects the default gateway from your routing table and opens the admin interface immediately.",
+				},
+				{
+					title: "Download & upload speed",
+					body: "Real throughput testing with live latency measurement, so you can see whether the link or the Wi-Fi is the bottleneck.",
+				},
+				{
+					title: "Ping, jitter & packet loss",
+					body: "ICMP and socket-based latency measurement with the variation reporting you need to spot a lossy link.",
+				},
+				{
+					title: "Hop-by-hop traceroute",
+					body: "Trace the actual packet path to any server and find where latency is being introduced.",
+				},
+				{
+					title: "A / AAAA / PTR DNS",
+					body: "Forward and reverse DNS lookups, including IPv6 records, for troubleshooting name resolution failures.",
+				},
+				{
+					title: "BSSID roaming logger",
+					body: "Records every access point handoff as you move, so you can see where roaming happens and whether it is clean.",
+				},
+			]}
+			steps={[
+				{
+					title: "Open Tools",
+					body: "Tap the Tools tab. The router admin card shows your detected gateway address straight away.",
+				},
+				{
+					title: "Configure the router",
+					body: "One tap opens the admin page in your browser — no more typing 192.168.0.1 or 192.168.1.1 from memory.",
+				},
+				{
+					title: "Measure",
+					body: "Run a speed test, a ping, a traceroute or a DNS lookup against a host you trust.",
+				},
+				{
+					title: "Compare",
+					body: "Re-test after each change. Throughput, jitter and packet-loss numbers make the effect of a channel change obvious.",
+				},
+			]}
+			specs={[
+				{
+					label: "Speed test endpoints",
+					value:
+						"Latency: google.com/generate_204 · Throughput: speed.cloudflare.com",
+				},
+				{
+					label: "Router admin",
+					value: "Default gateway detected from the routing table",
+				},
+				{
+					label: "Ping",
+					value: "ICMP and socket-based, with jitter and packet-loss reporting",
+				},
+				{ label: "Traceroute", value: "Hop-by-hop path trace to any host" },
+				{ label: "DNS", value: "A, AAAA and PTR reverse lookups" },
+				{
+					label: "Roaming log",
+					value: "BSSID handoff history with timestamps",
+				},
+				{
+					label: "Scope",
+					value:
+						"Packets are sent only to hosts you select — gateway, own subnet or a host you type",
+				},
+				{ label: "Everything else", value: "The analysis features remain fully offline" },
+			]}
+			faqs={[
+				{
+					question:
+						"Does using the Network Tools mean my data is being uploaded somewhere?",
+					answer:
+						"No. The speed test contacts two well-known public endpoints purely to measure throughput, exactly as any browser speed test does. Ping, traceroute and DNS lookups only reach the host you specify. Nothing is stored, logged or transmitted anywhere else.",
+				},
+				{
+					question: "Can I use the tools on networks I do not own?",
+					answer:
+						"You can scan and analyse any Wi-Fi network your device can see — that is passive observation of broadcasts your own radio already receives. You should only actively probe hosts (ping, traceroute, DNS, LAN sweep) that you own or have explicit permission to test.",
+				},
+				{
+					question: "Why does the speed test differ from my provider's own figure?",
+					answer:
+						"A speed test measures the path between your phone and the test endpoint, which includes your Wi-Fi link, your router, your internet connection and the endpoint's own capacity. Wire the same device to the router and compare — the difference is your Wi-Fi link.",
+				},
+				{
+					question: "What does the roaming logger actually show me?",
+					answer:
+						"Each time your device switches from one access point's BSSID to another, the logger records the transition with a timestamp. A cluster of handoffs in one spot usually means an access point is placed badly or is overloaded; a gap between handoffs means you are walking out of useful range.",
+				},
+			]}
+			related={[
+				{
+					label: "Channel Rating",
+					href: "/features/channel-rating/",
+					blurb: "Fix the radio side first, then measure the result with these tools.",
+				},
+				{
+					label: "Spectrum Analyzer",
+					href: "/features/spectrum-analyzer/",
+					blurb: "Understand which access points are causing interference.",
+				},
+				{
+					label: "Floorplan Heatmap",
+					href: "/features/floorplan-heatmap/",
+					blurb: "Find the physical locations behind a bad throughput reading.",
+				},
+			]}
+		/>
+	</main>
+	<SiteFooter />
+</Layout>

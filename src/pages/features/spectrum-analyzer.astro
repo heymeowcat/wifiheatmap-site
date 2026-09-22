@@ -1,0 +1,136 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import FeaturePage from "../../components/FeaturePage.astro";
+import { graph, organizationSchema, appSchema, breadcrumbSchema } from "../../lib/schema";
+
+const title = "Wi-Fi Spectrum Analyzer 2.4, 5 & 6 GHz — WifiHeatmap";
+const description =
+	"Offline Android spectrum analyzer: graph overlapping channels on 2.4, 5 and 6 GHz, detect 20–320 MHz bandwidths and pinpoint interference sources.";
+
+const structuredData = graph(
+	organizationSchema(),
+	appSchema(),
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Features", href: "/features/floorplan-heatmap/" },
+		{ label: "Spectrum analyzer" },
+	]),
+);
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/features/spectrum-analyzer/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<FeaturePage
+			slug="/features/spectrum-analyzer/"
+			eyebrow="Spectrum analyzer"
+			title="Tri-band channel graphs"
+			description="A live spectrum analyzer for 2.4 GHz, 5 GHz and 6 GHz. Every access point becomes a parabolic curve whose width is its real channel width — so you can see interference, not just infer it."
+			accent="emerald"
+			intro={`<p>A Wi-Fi analyser that only lists access points hides the most important information: whether their channels actually overlap. The spectrum graph in WifiHeatmap plots every access point as a <strong>parabolic curve</strong> across the frequency axis. The height of the curve is the signal strength in dBm; the width of the curve is the real channel width in use.</p>
+<p>When two curves overlap, the interference is visible. Two 80 MHz access points on 5 GHz channels 36 and 48 barely touch. Two 40 MHz access points on 2.4 GHz channels 1 and 6 overlap almost completely — and on that crowded 2.4 GHz band, that overlap is usually why your throughput suffers.</p>
+<p>All three bands are supported, including 6 GHz for Wi-Fi 6E and Wi-Fi 7 networks, with channel width detection from 20 MHz up to 320 MHz.</p>`}
+			capabilities={[
+				{
+					title: "2.4, 5 and 6 GHz",
+					body: "Full tri-band coverage including the 6 GHz spectrum used by Wi-Fi 6E and Wi-Fi 7 routers, subject to device hardware support.",
+				},
+				{
+					title: "Real channel widths",
+					body: "Detects 20, 40, 80, 160 and 320 MHz transmissions, so the curve width reflects the spectrum an access point actually occupies.",
+				},
+				{
+					title: "Timeline view",
+					body: "Track one access point's signal over time to spot flapping, roaming events and intermittent interference.",
+				},
+				{
+					title: "Zoom and pan",
+					body: "Pinch to zoom and swipe to scroll the 5 / 6 GHz channel axis where dozens of channels share a narrow band.",
+				},
+				{
+					title: "Live scan counter",
+					body: "A running scan counter shows exactly how fresh your data is — and warns you when Android is throttling your scans.",
+				},
+				{
+					title: "Precise filtering",
+					body: "Filter the network list by band, signal strength, SSID or security type before you start the graph.",
+				},
+			]}
+			steps={[
+				{
+					title: "Pick a band",
+					body: "Switch between 2.4 GHz, 5 GHz and 6 GHz using the band filter chips above the graph.",
+				},
+				{
+					title: "Start scanning",
+					body: "Scanning begins immediately. Every beacon frame received is added to the graph as a new curve.",
+				},
+				{
+					title: "Read the overlap",
+					body: "Look for curves whose bases intersect — those are the ones fighting each other for the same spectrum.",
+				},
+				{
+					title: "Zoom in",
+					body: "Pinch to zoom on the crowded 5 / 6 GHz range, where 160 MHz channels occupy most of the band.",
+				},
+			]}
+			specs={[
+				{ label: "Bands", value: "2.4 GHz, 5 GHz and 6 GHz (Wi-Fi 6E / Wi-Fi 7) — hardware dependent" },
+				{ label: "Channel widths", value: "20, 40, 80, 160 and 320 MHz (HT/VHT/EHT detection)" },
+				{ label: "Graph types", value: "Channels, Timeline and Rating tabs" },
+				{ label: "Signal range", value: "Typically -30 dBm (excellent) to -100 dBm (unusable)" },
+				{ label: "Standards detected", value: "802.11b/g/n/ac/ax/be, WPA3, WPA2, WEP, WPS, OWE, EAP" },
+				{ label: "Vendor lookup", value: "OUI database — identifies Cisco, Aruba, Ubiquiti, Apple, Netgear, TP-Link and more" },
+				{ label: "Distance estimate", value: "Free-Space Path Loss (FSPL) from signal strength and frequency" },
+				{ label: "Scan throttle detection", value: "In-app warning when Android limits foreground scan frequency" },
+			]}
+			faqs={[
+				{
+					question: "Why does my 6 GHz band show no networks?",
+					answer:
+						"6 GHz scanning depends on both hardware and software support. The device needs a 6 GHz capable Wi-Fi chipset and the OS must expose those results. On many phones the 6 GHz tab stays empty simply because the radio cannot see that band.",
+				},
+				{
+					question: "What does a wide curve mean?",
+					answer:
+						"Wide curves are access points using wide channels. A 160 MHz channel on 5 GHz occupies roughly four 40 MHz channels, which is fast but far more likely to overlap a neighbour. If throughput is poor, wide channels are often the reason.",
+				},
+				{
+					question: "Is the spectrum graph measured or calculated?",
+					answer:
+						"It is measured. Each curve is derived from real beacon frames your radio received, including the access point's advertised channel and channel width, positioned at the measured signal strength.",
+				},
+				{
+					question: "How do I read dBm?",
+					answer:
+						"-30 dBm is excellent, -50 dBm is good, -67 dBm is reliable for everyday use, -70 dBm is weak with likely dropouts, -80 dBm is very weak and -90 dBm is effectively unusable.",
+				},
+			]}
+			related={[
+				{
+					label: "Floorplan Heatmap",
+					href: "/features/floorplan-heatmap/",
+					blurb: "Map where that interference actually lands across your floor space.",
+				},
+				{
+					label: "Channel Rating",
+					href: "/features/channel-rating/",
+					blurb: "Let the app score every channel and pick the cleanest one for you.",
+				},
+				{
+					label: "Network Tools",
+					href: "/features/network-tools/",
+					blurb: "Confirm the fix with speed, latency and packet-loss measurements.",
+				},
+			]}
+		/>
+	</main>
+	<SiteFooter />
+</Layout>
