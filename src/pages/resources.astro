@@ -1,0 +1,258 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { SITE, APP_REPO_PUBLIC, GITHUB_REPO_URL, UPSTREAM_WIKI } from "../config";
+import {
+	graph,
+	organizationSchema,
+	breadcrumbSchema,
+} from "../lib/schema";
+
+const title = "Wi-Fi Analysis Resources, Standards & Tools — WifiHeatmap";
+const description =
+	"Authoritative references for Wi-Fi analysis: 802.11 channel tables, free-space path loss maths, Android scan throttling rules and RF survey best practice.";
+
+const structuredData = graph(
+	organizationSchema(),
+	{
+		"@context": "https://schema.org",
+		"@type": "CollectionPage",
+		name: "Wi-Fi analysis resources",
+		description,
+		url: `${SITE.origin}${SITE.base}/resources/`,
+	},
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Resources" },
+	]),
+);
+
+const references = [
+	{
+		category: "Standards & specifications",
+		items: [
+			{
+				label: "List of WLAN channels",
+				href: "https://en.wikipedia.org/wiki/List_of_WLAN_channels",
+				blurb:
+					"Every 2.4 / 5 / 6 GHz channel number, frequency and regulatory domain — the reference table behind any channel plan.",
+			},
+			{
+				label: "IEEE 802.11",
+				href: "https://en.wikipedia.org/wiki/IEEE_802.11",
+				blurb:
+					"The family of wireless standards behind every generation from 802.11b to 802.11be (Wi-Fi 7).",
+			},
+			{
+				label: "Wi-Fi Alliance — Wi-Fi CERTIFIED 7",
+				href: "https://www.wi-fi.org/discover-wi-fi/wi-fi-certified-7",
+				blurb:
+					"What 320 MHz channels, MLO and Multi-RU actually change for a real deployment.",
+			},
+			{
+				label: "Wi-Fi 6E / 6 GHz spectrum",
+				href: "https://en.wikipedia.org/wiki/6_GHz_Wi-Fi",
+				blurb:
+					"Why 6 GHz is a clean band, how it is licensed and where the coverage trade-offs are.",
+			},
+		],
+	},
+	{
+		category: "Propagation & measurement",
+		items: [
+			{
+				label: "Free-space path loss",
+				href: "https://en.wikipedia.org/wiki/Free-space_path_loss",
+				blurb:
+					"The formula WifiHeatmap uses to estimate distance from signal strength and frequency.",
+			},
+			{
+				label: "Inverse distance weighting",
+				href: "https://en.wikipedia.org/wiki/Inverse_distance_weighting",
+				blurb:
+					"How scattered survey samples are interpolated into a continuous coverage surface.",
+			},
+			{
+				label: "Path loss exponent",
+				href: "https://en.wikipedia.org/wiki/Path_loss",
+				blurb:
+					"Why signal falls off faster indoors than the free-space model predicts.",
+			},
+			{
+				label: "ITU-T P.1546 — outdoor propagation",
+				href: "https://www.itu.int/rec/R-REC-P.1546",
+				blurb:
+					"The International Telecommunication Union recommendation for terrestrial propagation modelling.",
+			},
+		],
+	},
+	{
+		category: "Android platform",
+		items: [
+			{
+				label: "Android Wi-Fi scanning throttling",
+				href: UPSTREAM_WIKI.throttling,
+				blurb:
+					"Why scans are limited to four per two minutes, and how to lift the limit on Android 10+.",
+			},
+			{
+				label: "Location permission requirements",
+				href: UPSTREAM_WIKI.permissions,
+				blurb:
+					"The platform rules that make location permission mandatory for Wi-Fi scan results.",
+			},
+			{
+				label: "Android Wi-Fi permissions reference",
+				href: "https://developer.android.com/develop/connectivity/wifi/wifi-permissions",
+				blurb:
+					"The official documentation for ACCESS_FINE_LOCATION, NEARBY_WIFI_DEVICES and friends.",
+			},
+			...(APP_REPO_PUBLIC
+				? [
+						{
+							label: "WifiHeatmap source on GitHub",
+							href: GITHUB_REPO_URL,
+							blurb:
+								"The complete GPL-3.0 source for the app this site is about. Read it, build it, fork it.",
+						},
+					]
+				: []),
+		],
+	},
+	{
+		category: "Learn the craft",
+		items: [
+			{
+				label: "Why Wi-Fi stinks and how to fix it",
+				href: "https://spectrum.ieee.org/telecom/wireless/why-wifi-stinksand-how-to-fix-it",
+				blurb:
+					"IEEE Spectrum's definitive piece on why consumer Wi-Fi underperforms, and what actually fixes it.",
+			},
+			{
+				label: "Find the best 5 GHz channel",
+				href: "https://www.maketecheasier.com/best-wifi-channel-for-5ghz-frequency/",
+				blurb:
+					"A practical walkthrough of 5 GHz channel selection, including UNII sub-bands.",
+			},
+			{
+				label: "Wi-Fi 4/5/6/6E/7 explained",
+				href: "https://www.duckware.com/tech/wifi-in-the-us.html",
+				blurb:
+					"A clear comparison of every Wi-Fi generation, so you can tell which hardware to buy next.",
+			},
+			{
+				label: "Ekahau — Wi-Fi design fundamentals",
+				href: "https://www.ekahau.com/resources/",
+				blurb:
+					"Professional-grade site survey methodology from a vendor that lives in this problem space.",
+			},
+		],
+	},
+];
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/resources/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<PageHero
+			eyebrow="Resources"
+			title="References worth bookmarking"
+			description="The standards, documentation and reading that WifiHeatmap itself is built on. Everything here is free and authoritative — no affiliate links, no gated PDFs."
+			crumbs={[{ label: "Resources" }]}
+			accent="emerald"
+		/>
+
+		<section class="pb-20" aria-labelledby="references-heading">
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<h2 id="references-heading" class="sr-only">Reference links</h2>
+
+				<div class="space-y-14">
+					{
+						references.map((group) => (
+							<div>
+								<h2 class="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
+									{group.category}
+								</h2>
+								<ul class="mt-6 grid gap-4 sm:grid-cols-2">
+									{group.items.map((item) => (
+										<li>
+											<a
+												href={item.href}
+												target="_blank"
+												rel="noopener noreferrer"
+												class="glass group flex h-full flex-col rounded-2xl p-5 transition-colors hover:border-cyan-400/30"
+											>
+												<span class="flex items-start justify-between gap-3">
+													<span class="text-base font-bold text-slate-900 transition-colors group-hover:text-sky-700">
+														{item.label}
+													</span>
+													<svg
+														class="mt-0.5 h-4 w-4 shrink-0 text-slate-500 transition-colors group-hover:text-sky-700"
+														fill="none"
+														stroke="currentColor"
+														stroke-width="2"
+														viewBox="0 0 24 24"
+														aria-hidden="true"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															d="M14 5l7 7m0 0l-7 7m7-7H3"
+														/>
+													</svg>
+												</span>
+												<span class="mt-2 text-sm leading-relaxed text-slate-500">
+													{item.blurb}
+												</span>
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+						))
+					}
+				</div>
+
+				<div class="glass mt-16 rounded-3xl p-7 sm:p-9">
+					<h2 class="text-xl font-black tracking-tight text-slate-900">
+						Know something we are missing?
+					</h2>
+					<p class="mt-3 max-w-2xl text-sm leading-relaxed text-slate-500">
+						This list is deliberately short and deliberately useful. If you have
+						a reference that genuinely helped you understand radio or Android
+						Wi-Fi, the app's issue tracker and the Google Play review page are
+						both open doors.
+					</p>
+					<div class="mt-6 flex flex-wrap gap-3">
+						<a
+							href={APP_REPO_PUBLIC ? `${GITHUB_REPO_URL}/issues` : "https://play.google.com/store/apps/details?id=com.heymeowcat.wifiheatmap"}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(120deg,#22d3ee,#818cf8)] px-5 py-3 text-sm font-bold text-ink-950 transition-transform duration-200 hover:scale-[1.03]"
+						>
+							<span>Suggest a reference</span>
+						</a>
+						<a
+							href={`${SITE.base}/guides/wifi-channel-guide/`}
+							class="inline-flex items-center gap-2 rounded-xl border border-slate-900/10 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-sky-300 hover:bg-white/75"
+						>
+							<span>Read the channel guide</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<CtaBand />
+	</main>
+	<SiteFooter />
+</Layout>

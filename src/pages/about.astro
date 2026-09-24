@@ -1,0 +1,265 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import AppScreenshots from "../components/AppScreenshots.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { SITE, PLAY_STORE_URL, GITHUB_REPO_URL, APP_REPO_PUBLIC, APP } from "../config";
+import { graph, organizationSchema, breadcrumbSchema } from "../lib/schema";
+
+const title = "About WifiHeatmap — Offline Android Wi-Fi Analyzer";
+const description =
+	"WifiHeatmap is an open-source (GPL-3.0) Android Wi-Fi analyser and site survey app by HEYMEOWCAT. No telemetry, no accounts, no ads — the source code is public.";
+
+const structuredData = graph(
+	organizationSchema(),
+	{
+		"@context": "https://schema.org",
+		"@type": "AboutPage",
+		name: "About WifiHeatmap",
+		description,
+		url: `${SITE.origin}${SITE.base}/about/`,
+		mainEntity: { "@id": `${SITE.origin}${SITE.base}/#app` },
+	},
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "About" },
+	]),
+);
+
+const timeline = [
+	{
+		title: "A fork, not a fork-in-the-road",
+		body: "WifiHeatmap began as a contribution to the open-source WifiHeatmap project by VREM Software Development. The goal was never to fork for its own sake — it was to add the things the original project was missing: floorplan heatmap surveying, modern network diagnostics and a full redesign of the interface.",
+	},
+	{
+		title: "Offline was the constraint that shaped everything",
+		body: "Building the heatmap survey meant solving step tracking, heading fusion and signal interpolation on-device. Once the architecture was on-device, extending that to every other feature was the natural path — and it happens to be the right privacy call as well.",
+	},
+	{
+		title: "Released on Google Play",
+		body: "Version 1.0 shipped with the floorplan survey, the tri-band spectrum analyser, the channel rating engine, the access point inspector and the network toolkit. The listing is live with a data-safety declaration of no data collected and no data shared.",
+	},
+	{
+		title: "Open source, permanently",
+		body: "The full source code is published under the GNU General Public License v3.0. If you want to build it yourself, audit the RF maths, add a band, or port the survey engine, the code and the build instructions are public.",
+	},
+];
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/about/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<PageHero
+			eyebrow="About the app"
+			title="Built by one person who got tired of guessing"
+			description="WifiHeatmap is a free, open-source Android Wi-Fi analyser and indoor site survey app. It measures the radio instead of guessing at it — and it does all of that without a single byte leaving your phone."
+			crumbs={[{ label: "About" }]}
+			accent="cyan"
+		/>
+
+		<!-- ============ Story ============ -->
+		<section class="pb-16" aria-labelledby="story-heading">
+			<div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
+				<div class="lg:col-span-7">
+					<h2
+						id="story-heading"
+						class="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+					>
+						Why this app exists
+					</h2>
+					<div class="mt-5 space-y-4 text-pretty leading-relaxed text-slate-600">
+						<p>
+							Most Wi-Fi analyser apps show you a list of access points and a
+							bar chart. That is useful, but it answers the wrong question. Knowing
+							that four networks are on channel 6 tells you nothing about whether
+							<span class="text-sky-700">your</span> signal survives the trip from
+							the access point to the far corner of the building.
+						</p>
+						<p>
+							WifiHeatmap was built to answer the question that actually matters:
+							<em>where is my coverage, and where is it failing?</em> That means
+							measuring the space — walking it, sampling it, and interpolating
+							between the samples — rather than only inspecting the radios.
+						</p>
+						<p>
+							It is also built the way a privacy-first tool should be: fully
+							offline, no account, no telemetry, no advertising SDKs, and open
+							source so you can verify every claim on this page.
+						</p>
+					</div>
+
+					<div class="mt-10 grid gap-4 sm:grid-cols-2">
+						{
+							[
+								{ label: "License", value: APP.license },
+								{ label: "Platform", value: `${APP.minimumAndroid} and up` },
+								{ label: "Price", value: "Free — no ads, no in-app purchases" },
+								{ label: "Network", value: "Not required for any core feature" },
+							].map((stat) => (
+								<div class="glass rounded-2xl p-5">
+									<div class="text-[11px] uppercase tracking-wide text-slate-500">
+										{stat.label}
+									</div>
+									<div class="mt-1.5 text-sm font-bold text-slate-900">{stat.value}</div>
+								</div>
+							))
+						}
+					</div>
+				</div>
+
+				<aside class="lg:col-span-5">
+					<div class="glass sticky top-24 rounded-3xl p-7">
+						<h2 class="text-lg font-bold text-slate-900">Quick facts</h2>
+						<dl class="mt-5 space-y-4 text-sm">
+							{
+								[
+									["App name", SITE.appName],
+									["Package", "com.heymeowcat.wifiheatmap"],
+									["Developer", SITE.authorHandle],
+									["Based in", SITE.country],
+									[
+										"Source",
+										APP_REPO_PUBLIC
+											? "Public on GitHub (GPL-3.0)"
+											: "GPL-3.0 · open source",
+									],
+									["Data collected", "None"],
+								].map((row) => (
+									<div class="flex items-start justify-between gap-4 border-b border-slate-900/8 pb-3 last:border-0 last:pb-0">
+										<dt class="shrink-0 text-slate-500">{row[0]}</dt>
+										<dd class="text-right font-medium text-slate-700">{row[1]}</dd>
+									</div>
+								))
+							}
+						</dl>
+						<div class="mt-7 flex flex-col gap-3">
+							<a
+								href={PLAY_STORE_URL}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="inline-flex items-center justify-center gap-2 rounded-xl bg-[linear-gradient(120deg,#22d3ee,#818cf8)] px-5 py-3 text-sm font-bold text-ink-950 transition-transform duration-200 hover:scale-[1.03]"
+							>
+								<span>Download on Google Play</span>
+							</a>
+							{
+								APP_REPO_PUBLIC && (
+									<a
+										href={GITHUB_REPO_URL}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-900/10 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-sky-300 hover:bg-white/75"
+									>
+										<span>View the source code</span>
+									</a>
+								)
+							}
+						</div>
+					</div>
+				</aside>
+			</div>
+		</section>
+
+		<!-- ============ Timeline ============ -->
+		<section
+			class="section-y relative overflow-hidden border-t border-slate-900/8 bg-white/40"
+			aria-labelledby="timeline-heading"
+		>
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<SectionHeading
+					id="timeline-heading"
+					eyebrow="How it happened"
+					title="From a community fork to a full survey tool"
+				/>
+
+				<ol class="mt-14 grid gap-5 md:grid-cols-2">
+					{
+						timeline.map((item, index) => (
+							<li class="glass relative overflow-hidden rounded-3xl p-7">
+								<span class="absolute -right-2 -top-3 font-mono text-5xl font-black text-slate-500">
+									{String(index + 1).padStart(2, "0")}
+								</span>
+								<h3 class="relative text-lg font-bold text-slate-900">{item.title}</h3>
+								<p class="relative mt-2.5 text-sm leading-relaxed text-slate-500">
+									{item.body}
+								</p>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</section>
+
+		<!-- ============ Screenshots ============ -->
+		<section
+			class="section-y border-t border-slate-900/8 bg-ink-950"
+			aria-labelledby="about-screenshots-heading"
+		>
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<SectionHeading
+					id="about-screenshots-heading"
+					eyebrow="In action"
+					title="Light and dark, on every screen"
+					description="WifiHeatmap ships with dark, light and system themes, and a compact or complete access point view — so it reads correctly on an OLED phone in a dark server room or in direct sunlight."
+				/>
+				<div class="mt-14">
+					<AppScreenshots tone="light" />
+				</div>
+			</div>
+		</section>
+
+		<!-- ============ Principles ============ -->
+		<section
+			class="section-y border-t border-slate-900/8 bg-white/40"
+			aria-labelledby="principles-heading"
+		>
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<SectionHeading
+					id="principles-heading"
+					eyebrow="Principles"
+					title="Four rules the app has never broken"
+				/>
+
+				<ul class="mt-12 grid gap-5 sm:grid-cols-2">
+					{
+						[
+							{
+								title: "Measure, do not guess",
+								body: "Every recommendation is derived from live radio observations. The app never hard-codes which channel is best, because the answer changes with the building.",
+							},
+							{
+								title: "Offline by default",
+								body: "Scanning, graphing, surveying, rating and exporting all work with the radio in airplane mode. The optional network tools are clearly separated from the core analysis.",
+							},
+							{
+								title: "Minimum permissions, explained",
+								body: "Only the permissions Android genuinely requires for Wi-Fi scanning and step counting — and every one of them is documented in plain language in the privacy policy.",
+							},
+							{
+								title: "Verifiable claims",
+								body: "The source code is public under GPL-3.0. If this page says the app collects nothing, you can read the code that proves it.",
+							},
+						].map((principle) => (
+							<li class="glass rounded-3xl p-7">
+								<h3 class="text-lg font-bold text-slate-900">{principle.title}</h3>
+								<p class="mt-2.5 text-sm leading-relaxed text-slate-500">
+									{principle.body}
+								</p>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</section>
+
+		<CtaBand />
+	</main>
+	<SiteFooter />
+</Layout>

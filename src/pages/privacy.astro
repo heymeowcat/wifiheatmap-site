@@ -1,0 +1,106 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import LegalPage from "../components/LegalPage.astro";
+import { SITE } from "../config";
+import { graph, organizationSchema, breadcrumbSchema } from "../lib/schema";
+
+const title = "Privacy Policy — WifiHeatmap Android App";
+const description =
+	"WifiHeatmap is 100% offline with zero telemetry, no analytics, no ads and no account. Exactly which Android permissions are used, and why.";
+
+const sections = [
+	{
+		heading: "1. Our core privacy commitment",
+		body: `<p>WifiHeatmap is designed from the ground up to respect your digital privacy. We operate under a single rule: <strong>your network data, survey maps and physical movements belong solely to you.</strong></p>
+<p>WifiHeatmap does not collect, track, transmit or monetise any personal data, device identifiers or RF scan telemetry. The application operates 100% on-device with zero backend communication.</p>`,
+	},
+	{
+		heading: "2. No cloud storage and no remote telemetry",
+		body: `<p>WifiHeatmap functions entirely on your device:</p>
+<ul class="list-disc space-y-2 pl-5">
+<li><strong>No server telemetry.</strong> The application does not communicate with any external server, API or cloud infrastructure for its analysis features.</li>
+<li><strong>No third-party SDKs.</strong> There are no advertising frameworks, crash analytics, behaviour trackers or proprietary analytics libraries in the app.</li>
+<li><strong>No accounts.</strong> You never register, provide an email address or create a profile to use any feature.</li>
+<li><strong>No data sale.</strong> Nothing is brokered, shared or sold — to anyone, for any purpose.</li>
+</ul>`,
+	},
+	{
+		heading: "3. Android permissions and exactly how they are used",
+		body: `<p>WifiHeatmap requests only the minimum Android permissions needed to scan Wi-Fi signals and count walking steps for indoor heatmaps.</p>
+<div class="space-y-3">
+<div class="rounded-2xl border border-slate-900/8 bg-white/70 p-5">
+<h3 class="mb-2 font-mono text-sm font-bold text-sky-700">ACCESS_FINE_LOCATION &amp; ACCESS_COARSE_LOCATION</h3>
+<p><strong>Why it is needed:</strong> Since Android 6.0 the operating system classifies Wi-Fi beacon frame scanning as location-sensitive data, because nearby BSSIDs could theoretically be correlated to coordinates. Android will return empty scan results unless location permission is granted.</p>
+<p class="mt-2 text-xs font-medium text-emerald-700">✓ Beacon frames are processed strictly in local RAM to calculate channel graphs and signal levels. Your location is never logged or transmitted.</p>
+</div>
+<div class="rounded-2xl border border-slate-900/8 bg-white/70 p-5">
+<h3 class="mb-2 font-mono text-sm font-bold text-sky-700">ACTIVITY_RECOGNITION</h3>
+<p><strong>Why it is needed:</strong> Used exclusively when you perform a walking heatmap survey on a floor plan. It enables Android's hardware step detector so Pedestrian Dead Reckoning can plot your footsteps on the map in real time.</p>
+<p class="mt-2 text-xs font-medium text-emerald-700">✓ Step data is recorded only during an active survey session and discarded when the session ends.</p>
+</div>
+<div class="rounded-2xl border border-slate-900/8 bg-white/70 p-5">
+<h3 class="mb-2 font-mono text-sm font-bold text-sky-700">ACCESS_WIFI_STATE &amp; CHANGE_WIFI_STATE</h3>
+<p><strong>Why it is needed:</strong> Allows the application to inspect Wi-Fi connection parameters (SSID, BSSID, RSSI, channel frequency, link speed) and to trigger Wi-Fi scans on demand.</p>
+</div>
+<div class="rounded-2xl border border-slate-900/8 bg-white/70 p-5">
+<h3 class="mb-2 font-mono text-sm font-bold text-sky-700">NEARBY_WIFI_DEVICES</h3>
+<p><strong>Why it is needed:</strong> On Android 13 (API 33) and newer this permission is declared with <code class="text-sky-700">neverForLocation</code> to perform device-to-device Wi-Fi discovery while reaffirming that physical geolocation tracking is not conducted.</p>
+</div>
+</div>`,
+	},
+	{
+		heading: "4. The optional Network Tools feature",
+		body: `<p>The diagnostics toolkit is the only part of WifiHeatmap that touches the network, and only when you ask it to:</p>
+<ul class="list-disc space-y-2 pl-5">
+<li><strong>Ping, traceroute, DNS lookup and LAN sweep</strong> send packets only to hosts you choose yourself — your gateway, your own subnet, or a domain or IP address you type in.</li>
+<li><strong>The speed test</strong> measures latency against <code class="text-sky-700">google.com/generate_204</code> and throughput against <code class="text-sky-700">speed.cloudflare.com</code>.</li>
+<li><strong>Nothing is sent anywhere else.</strong> Reports leave your device only through the standard Android share dialog, under your explicit control.</li>
+</ul>`,
+	},
+	{
+		heading: "5. Data export and local storage",
+		body: `<p>Any floor plan images you import, survey data and exported reports remain entirely in your device's local file storage. Because there is no cloud synchroniser, you are solely responsible for backing up your floor plans and survey exports.</p>`,
+	},
+	{
+		heading: "6. Children's privacy",
+		body: `<p>WifiHeatmap does not collect information from anyone, including children under 13. The application is safe for all audiences and contains no age-restricted content, advertising or monetisation.</p>`,
+	},
+	{
+		heading: "7. This website",
+		body: `<p>This website is a static, server-rendered marketing site. It sets no cookies, embeds no trackers and loads no third-party analytics or advertising scripts. Fonts and images are served from the same origin as the page, which keeps your visit free of cross-site requests.</p>`,
+	},
+	{
+		heading: "8. Contact and inquiries",
+		body: `<p>If you have questions, feedback or inquiries regarding this Privacy Policy or the security practices of WifiHeatmap, please reach out via the official Google Play Store app listing, where the developer's support contact is published.</p>`,
+	},
+];
+
+const structuredData = graph(
+	organizationSchema(),
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Privacy Policy" },
+	]),
+);
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/privacy/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<LegalPage
+			eyebrow="100% offline &amp; private"
+			title="Privacy Policy"
+			updated="September 2026"
+			accent="emerald"
+			sections={sections}
+		/>
+	</main>
+	<SiteFooter />
+</Layout>

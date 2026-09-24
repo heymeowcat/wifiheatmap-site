@@ -1,0 +1,164 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { SITE, APP_REPO_PUBLIC, GITHUB_REPO_URL } from "../config";
+import { graph, organizationSchema, breadcrumbSchema } from "../lib/schema";
+
+const title = "WifiHeatmap Changelog — Every Release & New Feature";
+const description =
+	"Release history for WifiHeatmap: floorplan heatmap surveys, tri-band spectrum analysis, channel rating, the 3D AR view and the network toolkit.";
+
+const structuredData = graph(
+	organizationSchema(),
+	{
+		"@context": "https://schema.org",
+		"@type": "CollectionPage",
+		name: "WifiHeatmap Changelog",
+		description,
+		url: `${SITE.origin}${SITE.base}/changelog/`,
+	},
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Changelog" },
+	]),
+);
+
+const releases = [
+	{
+		version: "1.0.2",
+		date: "October 2026",
+		tag: "Current",
+		tagTone: "emerald",
+		items: [
+			"Redesigned Tools screen with router admin shortcut and the full diagnostics suite",
+			"3D AR view for surveying signal strength in a live camera overlay",
+			"Survey CSV export and heat report image generation",
+			"Geiger-beep feedback mode that beeps faster as signal strength increases",
+			"Configurable step length and auto-record distance for the survey walk",
+		],
+	},
+	{
+		version: "1.0.0",
+		date: "September 2026",
+		tag: "First public release",
+		tagTone: "cyan",
+		items: [
+			"Indoor floorplan heatmap survey with Pedestrian Dead Reckoning walk tracking",
+			"Weinberg step-length model fused with magnetometer heading",
+			"Inverse Distance Weighting signal interpolation across the floor plan",
+			"Multi-floor survey support via barometric altitude detection",
+			"2.4 / 5 / 6 GHz spectrum channel graph with 20–320 MHz width detection",
+			"Automated channel star rating and recommended-channel list",
+			"Access point inspector with vendor OUI lookup and FSPL distance estimates",
+			"Speed test, ping, traceroute, DNS lookup and BSSID roaming logger",
+			"Dark, light and system themes with compact and complete access point views",
+		],
+	},
+];
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/changelog/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<PageHero
+			eyebrow="Release history"
+			title="Changelog"
+			description="Every WifiHeatmap release, newest first. The app is open source, so each version is a tagged build in the public repository."
+			crumbs={[{ label: "Changelog" }]}
+			accent="indigo"
+		/>
+
+		<section class="pb-20" aria-labelledby="releases-heading">
+			<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+				<h2 id="releases-heading" class="sr-only">Releases</h2>
+
+				<ol class="space-y-10">
+					{
+						releases.map((release) => (
+							<li class="glass relative overflow-hidden rounded-3xl p-7 sm:p-9">
+								<div class="flex flex-wrap items-center gap-3">
+									<h3 class="font-mono text-2xl font-black tracking-tight text-slate-900">
+										v{release.version}
+									</h3>
+									<span
+										class:list={[
+											"rounded-full border px-2.5 py-0.5 text-[11px] font-bold",
+											release.tagTone === "emerald"
+												? "border-emerald-200 bg-emerald-50 text-emerald-700"
+												: "border-cyan-200 bg-cyan-50 text-sky-700",
+										]}
+									>
+										{release.tag}
+									</span>
+									<time class="text-sm text-slate-500">{release.date}</time>
+								</div>
+								<ul class="mt-6 space-y-3">
+									{release.items.map((item) => (
+										<li class="flex items-start gap-3">
+											<span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
+											<span class="text-sm leading-relaxed text-slate-600">{item}</span>
+										</li>
+									))}
+								</ul>
+							</li>
+						))
+					}
+				</ol>
+
+				<div class="mt-12">
+					<SectionHeading
+						align="left"
+						eyebrow="Stay current"
+						title={
+							APP_REPO_PUBLIC
+								? "Releases are tagged in the public repository"
+								: "Every release is published on Google Play"
+						}
+						description="Each published build is a signed release, so you can compare any two versions of the app, read the change history, and always get the newest version from the Play Store."
+					/>
+					<div class="mt-6 flex flex-wrap gap-3">
+						{
+							APP_REPO_PUBLIC ? (
+								<a
+									href={`${GITHUB_REPO_URL}/releases`}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(120deg,#22d3ee,#818cf8)] px-5 py-3 text-sm font-bold text-ink-950 transition-transform duration-200 hover:scale-[1.03]"
+								>
+									<span>View releases on GitHub</span>
+								</a>
+							) : (
+								<a
+									href="https://play.google.com/store/apps/details?id=com.heymeowcat.wifiheatmap"
+									target="_blank"
+									rel="noopener noreferrer"
+									class="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(120deg,#22d3ee,#818cf8)] px-5 py-3 text-sm font-bold text-ink-950 transition-transform duration-200 hover:scale-[1.03]"
+								>
+									<span>Get the latest version</span>
+								</a>
+							)
+						}
+						<a
+							href={`${SITE.base}/about/`}
+							class="inline-flex items-center gap-2 rounded-xl border border-slate-900/10 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-sky-300 hover:bg-white/75"
+						>
+							<span>About the project</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<CtaBand />
+	</main>
+	<SiteFooter />
+</Layout>

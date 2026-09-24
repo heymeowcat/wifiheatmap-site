@@ -1,0 +1,75 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import LegalPage from "../components/LegalPage.astro";
+import { graph, organizationSchema, breadcrumbSchema } from "../lib/schema";
+
+const title = "Terms of Service — WifiHeatmap Android App";
+const description =
+	"Terms for WifiHeatmap: an open-source (GPL-3.0) Android Wi-Fi analyzer and RF site survey app for authorised surveying and network diagnostics.";
+
+const sections = [
+	{
+		heading: "1. Agreement to these terms and licence",
+		body: `<p>By installing, downloading or using the <strong>WifiHeatmap</strong> mobile application or this website, you agree to be bound by these Terms of Service.</p>
+<p>WifiHeatmap grants you a personal, non-exclusive, non-transferable licence to use the application on your supported Android devices in accordance with these terms. The application itself is open source and released under the GNU General Public License v3.0.</p>`,
+	},
+	{
+		heading: "2. Permitted use and ethical responsibilities",
+		body: `<p>WifiHeatmap is designed and distributed exclusively as an RF diagnostics, channel optimisation and site survey utility. You agree to use it strictly in compliance with all applicable local, national and international laws:</p>
+<ul class="list-disc space-y-2 pl-5">
+<li><strong>Authorised surveys.</strong> Only conduct physical indoor heatmap surveys in facilities or properties where you are authorised to inspect wireless signals.</li>
+<li><strong>No hacking or exploitation.</strong> WifiHeatmap is <em>not</em> a tool for intercepting private data packets, bypassing authentication, cracking passwords or conducting unauthorised network intrusion. Any such modification or malicious deployment is strictly prohibited.</li>
+<li><strong>Resident networks only.</strong> Any host you probe with the Network Tools must be one you own or have explicit permission to test.</li>
+</ul>`,
+	},
+	{
+		heading: "3. Data ownership and local storage",
+		body: `<p>Any floor plans imported, measurements logged or survey reports exported are your sole property. Because WifiHeatmap has no cloud synchroniser or remote database, you are solely responsible for backing up your local files, floor plans and survey exports.</p>`,
+	},
+	{
+		heading: "4. Disclaimer of warranty",
+		body: `<p class="rounded-2xl border border-slate-900/8 bg-white/70 p-4 font-mono text-xs leading-relaxed text-slate-500">THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>`,
+	},
+	{
+		heading: "5. Hardware and sensor dependencies",
+		body: `<p>Certain advanced features — 6 GHz scanning (Wi-Fi 6E / 7), 320 MHz channel detection, Wi-Fi RTT ranging (802.11mc), barometric altitude sensing and step detector hardware — depend directly on the capabilities of your device's chipset and operating system level. Availability varies by manufacturer and model.</p>`,
+	},
+	{
+		heading: "6. Limitation of liability",
+		body: `<p>In no event shall the author or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the application or the use or other dealings in the application.</p>`,
+	},
+	{
+		heading: "7. Inquiries and support",
+		body: `<p>For technical inquiries, bug reports or support questions, contact the developer through the official Google Play Store app listing, where the support contact and issue-reporting options are published.</p>`,
+	},
+];
+
+const structuredData = graph(
+	organizationSchema(),
+	breadcrumbSchema([
+		{ label: "Home", href: "/" },
+		{ label: "Terms of Service" },
+	]),
+);
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/terms/"
+	structuredData={structuredData}
+>
+	<SiteHeader />
+	<main id="main">
+		<LegalPage
+			eyebrow="Terms &amp; end user agreement"
+			title="Terms of Service"
+			updated="September 2026"
+			accent="indigo"
+			sections={sections}
+		/>
+	</main>
+	<SiteFooter />
+</Layout>

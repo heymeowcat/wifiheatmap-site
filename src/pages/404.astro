@@ -1,0 +1,77 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import HeatHaze from "../components/HeatHaze.astro";
+import { SITE } from "../config";
+
+const title = "Page not found (404) — WifiHeatmap";
+const description =
+	"The page you were looking for has moved or never existed. Jump back to the WifiHeatmap home page or browse the feature guides.";
+---
+
+<Layout
+	title={title}
+	description={description}
+	path="/404/"
+	noindex={true}
+>
+	<SiteHeader />
+	<main id="main">
+		<section class="relative isolate overflow-hidden py-28 sm:py-36">
+			<HeatHaze class="-z-10" intensity={0.5} grid />
+
+			<div class="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
+				<p class="font-mono text-sm font-black uppercase tracking-[0.3em] text-sky-600">
+					Error 404
+				</p>
+				<h1
+					class="mt-6 text-balance text-4xl font-black tracking-tight text-slate-900 sm:text-6xl"
+				>
+					No signal at this address
+				</h1>
+				<p class="mx-auto mt-6 max-w-lg text-pretty text-base leading-relaxed text-slate-500 sm:text-lg">
+					The page you are looking for has moved, been renamed, or never existed.
+					Nothing is broken on your side — and no packets were harmed.
+				</p>
+
+				<div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+					<a
+						href={`${SITE.base}/`}
+						class="inline-flex items-center justify-center gap-2 rounded-xl bg-[linear-gradient(120deg,#22d3ee,#818cf8)] px-6 py-3.5 text-sm font-bold text-ink-950 transition-transform duration-200 hover:scale-[1.03]"
+					>
+						<span>Back to the home page</span>
+					</a>
+					<a
+						href={`${SITE.base}/features/floorplan-heatmap/`}
+						class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-900/10 bg-white/70 px-6 py-3.5 text-sm font-semibold text-slate-700 transition-colors hover:border-sky-300 hover:bg-white/75"
+					>
+						<span>Browse the features</span>
+					</a>
+				</div>
+
+				<ul class="mt-12 flex flex-wrap justify-center gap-2">
+					{
+						[
+							["Spectrum analyzer", "/features/spectrum-analyzer/"],
+							["Channel rating", "/features/channel-rating/"],
+							["Network tools", "/features/network-tools/"],
+							["Wi-Fi channel guide", "/guides/wifi-channel-guide/"],
+							["About", "/about/"],
+						].map(([label, href]) => (
+							<li>
+								<a
+									href={`${SITE.base}${href}`}
+									class="chip text-slate-600 transition-colors hover:text-sky-700"
+								>
+									{label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</section>
+	</main>
+	<SiteFooter />
+</Layout>
