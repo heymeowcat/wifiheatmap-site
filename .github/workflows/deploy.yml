@@ -70,10 +70,11 @@ jobs:
         working-directory: ${{ env.BUILD_PATH }}
 
       - name: Build with Astro
-        run: |
-          ${{ steps.detect-package-manager.outputs.runner }} astro build \
-            --site "${{ steps.pages.outputs.origin }}" \
-            --base "${{ steps.pages.outputs.base_path }}"
+        # The site URL and base path live in astro.config.mjs. Overriding
+        # them with the Pages settings here (http + no base path while a
+        # custom domain serves the repo) would break the canonical tags
+        # that the SEO audit below checks.
+        run: npm run build
         working-directory: ${{ env.BUILD_PATH }}
 
       - name: SEO audit

@@ -46,21 +46,32 @@ function fixRedirectStubs() {
 					const html = await readFile(file, "utf8");
 					if (!html.includes('http-equiv="refresh"')) continue;
 
+					// CI may override --site (e.g. with http:// when HTTPS is
+					// not enforced yet), so match the host on either protocol
+					// and rebuild every URL the same way from SITE and BASE.
+					const prefixBase = (target) => {
+						if (!target.startsWith("/")) return target;
+						if (target === BASE || target.startsWith(`${BASE}/`)) {
+							return target;
+						}
+						return `${BASE}${target}`;
+					};
+
 					const updated = html
 						.replace(
 							/(<meta http-equiv="refresh" content="0;url=)([^"]+)(")/g,
 							(_m, before, target, after) =>
-								`${before}${target.startsWith("/") ? `${BASE}${target}` : target}${after}`,
+								`${before}${prefixBase(target)}${after}`,
 						)
 						.replace(
-							/(<link rel="canonical" href="https:\/\/heymeowcat\.is-a\.dev)([^"]*)(")/g,
-							(_m, before, target, after) =>
-								`${before}${target.startsWith("/") ? `${BASE}${target}` : target}${after}`,
+							/(<link rel="canonical" href=")(https?:\/\/heymeowcat\.is-a\.dev)?(\/[^"]*)(")/g,
+							(_m, before, _host, target, after) =>
+								`${before}${SITE}${prefixBase(target)}${after}`,
 						)
 						.replace(
 							/(<body>\s*<a href=")([^"]+)(")/g,
 							(_m, before, target, after) =>
-								`${before}${target.startsWith("/") ? `${BASE}${target}` : target}${after}`,
+								`${before}${prefixBase(target)}${after}`,
 						);
 
 					if (updated !== html) {
