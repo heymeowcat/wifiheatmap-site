@@ -11,7 +11,7 @@ import { graph, organizationSchema, breadcrumbSchema } from "../lib/schema";
 
 const title = "About WifiHeatmap — Offline Android Wi-Fi Analyzer";
 const description =
-	"WifiHeatmap is an open-source (GPL-3.0) Android Wi-Fi analyser and site survey app by HEYMEOWCAT. No telemetry, no accounts, no ads — the source code is public.";
+	"WifiHeatmap is a free Android Wi-Fi analyser and site survey app by HEYMEOWCAT. No telemetry, no accounts, no ads — everything stays on your phone.";
 
 const structuredData = graph(
 	organizationSchema(),
@@ -32,7 +32,7 @@ const structuredData = graph(
 const timeline = [
 	{
 		title: "A fork, not a fork-in-the-road",
-		body: "WifiHeatmap began as a contribution to the open-source WifiHeatmap project by VREM Software Development. The goal was never to fork for its own sake — it was to add the things the original project was missing: floorplan heatmap surveying, modern network diagnostics and a full redesign of the interface.",
+		body: "WifiHeatmap began as a contribution to the WifiHeatmap project by VREM Software Development. The goal was never to fork for its own sake — it was to add the things the original project was missing: floorplan heatmap surveying, modern network diagnostics and a full redesign of the interface.",
 	},
 	{
 		title: "Offline was the constraint that shaped everything",
@@ -43,8 +43,8 @@ const timeline = [
 		body: "Version 1.0 shipped with the floorplan survey, the tri-band spectrum analyser, the channel rating engine, the access point inspector and the network toolkit. The listing is live with a data-safety declaration of no data collected and no data shared.",
 	},
 	{
-		title: "Open source, permanently",
-		body: "The full source code is published under the GNU General Public License v3.0. If you want to build it yourself, audit the RF maths, add a band, or port the survey engine, the code and the build instructions are public.",
+		title: "Private by construction",
+		body: "Every survey, scan, graph and export happens on the device. There is no account to create, no cloud to sync to and no analytics SDK watching anything — the app has nothing to sell because it has nothing about you.",
 	},
 ];
 ---
@@ -60,7 +60,7 @@ const timeline = [
 		<PageHero
 			eyebrow="About the app"
 			title="Built by one person who got tired of guessing"
-			description="WifiHeatmap is a free, open-source Android Wi-Fi analyser and indoor site survey app. It measures the radio instead of guessing at it — and it does all of that without a single byte leaving your phone."
+			description="WifiHeatmap is a free Android Wi-Fi analyser and indoor site survey app. It measures the radio instead of guessing at it — and it does all of that without a single byte leaving your phone."
 			crumbs={[{ label: "About" }]}
 			accent="cyan"
 		/>
@@ -91,15 +91,16 @@ const timeline = [
 						</p>
 						<p>
 							It is also built the way a privacy-first tool should be: fully
-							offline, no account, no telemetry, no advertising SDKs, and open
-							source so you can verify every claim on this page.
+							offline, no account, no telemetry and no advertising SDKs. The
+							Play Store data-safety form says it plainly: no data collected,
+							no data shared.
 						</p>
 					</div>
 
 					<div class="mt-10 grid gap-4 sm:grid-cols-2">
 						{
 							[
-								{ label: "License", value: APP.license },
+								{ label: "Latest version", value: `v${APP.version}` },
 								{ label: "Platform", value: `${APP.minimumAndroid} and up` },
 								{ label: "Price", value: "Free — no ads, no in-app purchases" },
 								{ label: "Network", value: "Not required for any core feature" },
@@ -128,8 +129,8 @@ const timeline = [
 									[
 										"Source",
 										APP_REPO_PUBLIC
-											? "Public on GitHub (GPL-3.0)"
-											: "GPL-3.0 · open source",
+											? "Public on GitHub"
+											: "Not published yet",
 									],
 									["Data collected", "None"],
 								].map((row) => (
@@ -157,7 +158,7 @@ const timeline = [
 										rel="noopener noreferrer"
 										class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-900/10 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-sky-300 hover:bg-white/75"
 									>
-										<span>View the source code</span>
+										<span>Source on GitHub</span>
 									</a>
 								)
 							}
@@ -243,8 +244,8 @@ const timeline = [
 								body: "Only the permissions Android genuinely requires for Wi-Fi scanning and step counting — and every one of them is documented in plain language in the privacy policy.",
 							},
 							{
-								title: "Verifiable claims",
-								body: "The source code is public under GPL-3.0. If this page says the app collects nothing, you can read the code that proves it.",
+								title: "Nothing collected, nothing shared",
+								body: "The Play Store data-safety declaration says no data is collected and no data is shared — and the privacy policy explains exactly how the app manages that with no account, no cloud and no analytics.",
 							},
 						].map((principle) => (
 							<li class="glass rounded-3xl p-7">

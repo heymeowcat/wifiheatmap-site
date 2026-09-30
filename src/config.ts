@@ -29,9 +29,10 @@ export const PLAY_STORE_URL =
  * The Android app's source repository.
  *
  * The repository is currently **private**, so the site does not link to it —
- * a dead link damages both trust and SEO. Set `APP_REPO_PUBLIC` to `true`
- * once the repository is public and every "source code" link, plus the
- * `sameAs` entry in the Organization schema, switches on automatically.
+ * a dead link damages both trust and SEO — and nothing on the site claims
+ * the app is open source while that is not the case. Set `APP_REPO_PUBLIC`
+ * to `true` once the repository goes public and the repository link, plus
+ * the `sameAs` entry in the Organization schema, switch on automatically.
  */
 export const APP_REPO_PUBLIC = false;
 
@@ -52,7 +53,6 @@ export const APP = {
 	minimumAndroid: "Android 7.0 (API 24)",
 	targetAndroid: "Android 16 (API 36)",
 	version: "1.0.2",
-	license: "GPL-3.0",
 	price: "0",
 	priceCurrency: "USD",
 } as const;

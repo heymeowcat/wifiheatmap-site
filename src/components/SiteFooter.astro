@@ -117,10 +117,15 @@ const rainbowDot = [
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
-								d="M12 3v18M3 12h18"
+								d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"
+							></path>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M5.8 5.8l12.4 12.4"
 							></path>
 						</svg>
-						GPL-3.0
+						No ads
 					</span>
 				</div>
 			</div>
@@ -212,7 +217,7 @@ const rainbowDot = [
 										rel="noopener noreferrer"
 										class="inline-flex items-center gap-1.5 py-1.5 text-slate-600 transition-colors hover:text-slate-900"
 									>
-										Source code (GPL-3.0)
+										Source on GitHub (when public)
 										<svg
 											class="h-3 w-3"
 											fill="none"
@@ -248,7 +253,7 @@ const rainbowDot = [
 		<div
 			class="flex flex-col items-center justify-between gap-4 text-xs text-slate-500 sm:flex-row"
 		>
-			<p>&copy; {year} {SITE.author}. WifiHeatmap is open source under GPL-3.0.</p>
+			<p>&copy; {year} {SITE.author}. WifiHeatmap — free to use, no data collected.</p>
 			<p class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
 				<a href={`${base}/privacy/`} class="inline-block py-1.5 hover:text-slate-900"
 					>Privacy</a
